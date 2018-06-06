@@ -10,7 +10,7 @@ struct Version
   static const int MAJOR = 2;
   static const int MINOR = 0;
   static const int PATCH = 0;
-  static const int RELEASE_DATE = 20170222;
+  static const int RELEASE_DATE = 20180606;
 };
 
 }
