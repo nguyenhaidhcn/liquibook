@@ -556,11 +556,13 @@ OrderBook<OrderPtr>::add_stop_order(Tracker & tracker)
   {
     if(isBuy)
     {
-      stopBids_.emplace(key, std::move(tracker));
+		stopBids_.emplace(std::make_pair(key, tracker));
+      //stopBids_.emplace(key, std::move(tracker));
     }
     else
     {
-      stopAsks_.emplace(key, std::move(tracker));
+      //stopAsks_.emplace(key, std::move(tracker));
+		stopAsks_.emplace(std::make_pair(key, tracker));
     }
   }
   return isStopped;
