@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <stdexcept>
+#include "glog/logging.h"
 
 namespace liquibook { namespace book {
   // Types used in Liquibook
