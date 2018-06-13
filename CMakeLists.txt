@@ -12,4 +12,5 @@ file(GLOB SRCS
 set(CMAKE_CXX_STANDARD 11)
 
 add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS})
-target_link_libraries(liquibook -lglog -pthread -lboost_thread -lboost_system -lboost_date_time -lrt -lboost_iostreams)
+target_link_libraries(liquibook -lglog -pthread )
+#target_link_libraries(liquibook -lglog -pthread -lboost_thread -lboost_system -lboost_date_time -lrt -lboost_iostreams)
