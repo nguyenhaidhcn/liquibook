@@ -13,6 +13,9 @@ class ConfigFile {
 
 public:
     ConfigFile(std::string const& configFile);
+    static ConfigFile* configFile;
+
+    static ConfigFile* getInstance();
 
     std::string const& Value(std::string const& section, std::string const& entry) const;
 };

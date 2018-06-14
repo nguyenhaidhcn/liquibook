@@ -47,9 +47,22 @@ ConfigFile::ConfigFile(std::string const& configFile) {
         value = trim(line.substr(posEqual+1));
 
         content_[inSection+'/'+name]=(value);
-        DLOG(INFO)<<"Section:"<<inSection<<" key:"<<name<<" value:"<<value;
+        DLOG(INFO)<<"Section:"<<inSection<<"   "<<name<<"="<<value;
     }
 }
+
+ConfigFile* ConfigFile::configFile = 0;
+
+ConfigFile* ConfigFile::getInstance()
+{
+    if(configFile == 0)
+    {
+        configFile = new ConfigFile("config.txt");
+    }
+
+    return configFile;
+}
+
 
 std::string const& ConfigFile::Value(std::string const& section, std::string const& entry) const {
 

@@ -11,11 +11,18 @@
 #include <vector>
 #include <iterator>
 #include <Market.h>
+#include "config/ConfigFile.h"
+
 
 using namespace orderentry;
 
 int main(int argc, const char * argv[])
 {
+
+    auto config = ConfigFile::getInstance();
+    DLOG(INFO)<<config;
+
+
     bool done = false;
     bool prompt = true;
     bool interactive = true;
