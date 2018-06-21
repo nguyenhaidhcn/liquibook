@@ -13,7 +13,6 @@
 #include <Market.h>
 #include "config/ConfigFile.h"
 
-
 using namespace orderentry;
 
 int main(int argc, const char * argv[])
