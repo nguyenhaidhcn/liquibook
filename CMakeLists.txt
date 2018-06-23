@@ -6,6 +6,7 @@ include_directories(src/
         /usr/local/include/activemq-cpp-3.9.4
         /usr/local/include/activemq-cpp-3.10.0
         /usr/include/apr-1.0
+        /usr/include/apr-1
         )
 
 file(GLOB SRCS
@@ -15,6 +16,13 @@ file(GLOB SRCS
         src/mt_order_entry/*.cpp)
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS} src/config/ConfigFile.cpp src/config/ConfigFile.h global/global.cpp global/global.h src/cms/producer/CmsProducer.cpp src/cms/producer/CmsProducer.h)
-target_link_libraries(liquibook -lglog -pthread -lactivemq)
+add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS}
+        src/config/ConfigFile.cpp
+        src/config/ConfigFile.h
+        global/global.cpp
+        global/global.h
+#        src/cms/producer/CmsProducer.cpp
+#        src/cms/producer/CmsProducer.h
+        )
+target_link_libraries(liquibook -lglog -pthread)
 #target_link_libraries(liquibook -lglog -pthread -lboost_thread -lboost_system -lboost_date_time -lrt -lboost_iostreams)
