@@ -38,16 +38,18 @@ void start_cms()
 
     // Create the consumer
     ExtConsumer = new AsyncGwConsumer( brokerURI, destURI, false, false );
+
+    std::string destURI2 = "output";
+
+    // Create the producer and run it.
+    ExtGwProducer  =new AsynGwProducer( brokerURI, destURI2, false );
+    ExtGwProducer->run();
 //
 //    // Start it up and it will listen forever.
     ExtConsumer->runConsumer();
 
 
-    std::string destURI2 = "output";
 
-    // Create the producer and run it.
-    ExtGwProducer  =new AsynGwProducer( brokerURI, destURI, false );
-    ExtGwProducer->run();
 
 };
 

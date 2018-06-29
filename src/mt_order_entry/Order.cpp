@@ -3,7 +3,8 @@
 // See the file license.txt for licensing information.
 #include "Order.h"
 #include <sstream>
-
+#include <strstream>
+#include <string>
 namespace orderentry
 {
 
@@ -283,43 +284,44 @@ std::ostream & operator << (std::ostream & out, const Order::StateChange & event
 
 std::ostream & operator << (std::ostream & out, const Order & order)
 {
-    DLOG(INFO) << "[#" << order.order_id();
-    DLOG(INFO) << ' ' << (order.is_buy() ? "BUY" : "SELL");
-    DLOG(INFO) << ' ' << order.order_qty();
-    DLOG(INFO) << ' ' << order.symbol();
+    std::strstream ss;
+    ss << "[#" << order.order_id();
+    ss << ' ' << (order.is_buy() ? "BUY" : "SELL");
+    ss << ' ' << order.order_qty();
+    ss << ' ' << order.symbol();
     if(order.price() == 0)
     {
-        DLOG(INFO) << " MKT";
+        ss << " MKT";
     }
     else
     {
-        DLOG(INFO) << " $" << order.price();
+        ss << " $" << order.price();
     }
 
     if(order.stop_price() != 0)
     {
-        DLOG(INFO) << " STOP " << order.stop_price();
+        ss << " STOP " << order.stop_price();
     }
 
-    DLOG(INFO)  << (order.all_or_none() ? " AON" : "")
+    ss  << (order.all_or_none() ? " AON" : "")
         << (order.immediate_or_cancel() ? " IOC" : "");
 
     auto onMarket = order.quantityOnMarket();
     if(onMarket != 0)
     {
-        DLOG(INFO) << " Open: " << onMarket;
+        ss << " Open: " << onMarket;
     }
 
     auto filled = order.quantityFilled();
     if(filled != 0)
     {
-        DLOG(INFO) << " Filled: " << filled;
+        ss << " Filled: " << filled;
     }
 
     auto cost = order.fillCost();
     if(cost != 0)
     {
-        DLOG(INFO) << " Cost: " << cost;
+        ss << " Cost: " << cost;
     }
 
     if(order.isVerbose())
@@ -327,15 +329,16 @@ std::ostream & operator << (std::ostream & out, const Order & order)
         const Order::History & history = order.history();
         for(auto event = history.begin(); event != history.end(); ++event)
         {
-            DLOG(INFO) << "\n\t" << *event;
+            ss << "\n\t" << *event;
         } 
     }
     else
     {
-        DLOG(INFO) << " Last Event:" << order.currentState();
+        ss << " Last Event:" << order.currentState().description_;
     }
 
-    DLOG(INFO) << ']';
+    ss << ']';
+    LOG(INFO)<<ss.str();
    
    return out;
 }
