@@ -12,8 +12,53 @@
 #include <iterator>
 #include <Market.h>
 #include "config/ConfigFile.h"
+#include "cms/AsyncGwConsumer.h"
 
 using namespace orderentry;
+
+void start_cms()
+{
+    activemq::library::ActiveMQCPP::initializeLibrary();
+
+    std::cout << "=====================================================\n";
+    std::cout << "Starting the example:" << std::endl;
+    std::cout << "-----------------------------------------------------\n";
+
+    std::string brokerURI =
+        "failover:(tcp://127.0.0.1:61616"
+        //        "?wireFormat=openwire"
+        //        "&connection.useAsyncSend=true"
+        //        "&transport.commandTracingEnabled=true"
+        //        "&transport.tcpTracingEnabled=true"
+        //        "&wireFormat.tightEncodingEnabled=true"
+        ")";
+
+    //============================================================
+    // This is the Destination Name and URI options.  Use this to
+    // customize where the consumer listens, to have the consumer
+    // use a topic or queue set the 'useTopics' flag.
+    //============================================================
+    std::string destURI = "TEST.FOO"; //?consumer.prefetchSize=1";
+
+    //============================================================
+    // set to true to use topics instead of queues
+    // Note in the code above that this causes createTopic or
+    // createQueue to be used in the consumer.
+    //============================================================
+    bool useTopics = false;
+
+    //============================================================
+    // set to true if you want the consumer to use client ack mode
+    // instead of the default auto ack mode.
+    //============================================================
+    bool clientAck = false;
+
+    // Create the consumer
+    AsyncGwConsumer consumer( brokerURI, destURI, useTopics, clientAck );
+
+    // Start it up and it will listen forever.
+    consumer.runConsumer();
+};
 
 int main(int argc, const char * argv[])
 {
@@ -21,6 +66,7 @@ int main(int argc, const char * argv[])
     auto config = ConfigFile::getInstance();
     DLOG(INFO)<<config;
 
+    start_cms();
 
     bool done = false;
     bool prompt = true;
@@ -31,6 +77,8 @@ int main(int argc, const char * argv[])
     std::ofstream logFile;
 
     DLOG(INFO) << "Test market ";
+
+
 
     if(argc > 1)
     {
@@ -100,7 +148,13 @@ int main(int argc, const char * argv[])
             DLOG(INFO) << "> " << std::flush;
             std::getline(std::cin, input);
         }
-        std::transform(input.begin(), input.end(), input.begin(), toupper);
+//        std::transform(input.begin(), input.end(), input.begin(), toupper);
+
+        std::locale loc;
+//        std::string str="Test String.\n";
+        for (std::string::size_type i=0; i<input.length(); ++i)
+            input[i] = std::toupper(input[i],loc);
+
         if(log != &std::cout && !fileActive)
         {
             if(input.substr(0,2) != "##") // don't log ## comments.

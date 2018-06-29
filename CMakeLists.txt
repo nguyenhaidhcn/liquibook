@@ -21,8 +21,13 @@ add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS}
         src/config/ConfigFile.h
         global/global.cpp
         global/global.h
-#        src/cms/producer/CmsProducer.cpp
-#        src/cms/producer/CmsProducer.h
+        src/cms/AsyncGwConsumer.h
+
         )
-target_link_libraries(liquibook -lglog -pthread)
+
+
+
+add_library(activemq SHARED IMPORTED)
+set_target_properties(activemq PROPERTIES IMPORTED_LOCATION "/usr/local/lib/libactivemq-cpp.a")
+target_link_libraries(liquibook -lglog -pthread activemq)
 #target_link_libraries(liquibook -lglog -pthread -lboost_thread -lboost_system -lboost_date_time -lrt -lboost_iostreams)
