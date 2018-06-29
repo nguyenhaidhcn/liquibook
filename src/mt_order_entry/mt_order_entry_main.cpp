@@ -14,6 +14,7 @@
 #include "config/ConfigFile.h"
 #include "cms/AsyncGwConsumer.h"
 
+
 using namespace orderentry;
 
 void start_cms()
@@ -38,7 +39,7 @@ void start_cms()
     // customize where the consumer listens, to have the consumer
     // use a topic or queue set the 'useTopics' flag.
     //============================================================
-    std::string destURI = "TEST.FOO"; //?consumer.prefetchSize=1";
+    std::string destURI = "TEST.FOO1"; //?consumer.prefetchSize=1";
 
     //============================================================
     // set to true to use topics instead of queues
@@ -58,6 +59,9 @@ void start_cms()
 
     // Start it up and it will listen forever.
     consumer.runConsumer();
+
+    char a;
+    std::cin>>a;
 };
 
 int main(int argc, const char * argv[])

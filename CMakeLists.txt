@@ -5,8 +5,10 @@ include_directories(src/
         src/mt_order_entry
         /usr/local/include/activemq-cpp-3.9.4
         /usr/local/include/activemq-cpp-3.10.0
-        /usr/include/apr-1.0
+#        /usr/include/apr-1.0
         /usr/include/apr-1
+#        /usr/include/apr-1
+#        /usr/include/openssl
         )
 
 file(GLOB SRCS
@@ -29,5 +31,12 @@ add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS}
 
 add_library(activemq SHARED IMPORTED)
 set_target_properties(activemq PROPERTIES IMPORTED_LOCATION "/usr/local/lib/libactivemq-cpp.a")
-target_link_libraries(liquibook -lglog -pthread activemq)
+target_link_libraries(liquibook -lglog -pthread apr-1 ssl activemq
+        /usr/local/opt/openssl/lib/libssl.a
+        /usr/local/opt/openssl/lib/libcrypto.a
+#        /usr/lib/x86_64-linux-gnu/libapr-1.a
+#        /usr/lib/x86_64-linux-gnu/libssl.a
+#        /usr/lib/x86_64-linux-gnu/libssl3.so
+#        /usr/lib/apr-util-1/apr_crypto_openssl.a
+        )
 #target_link_libraries(liquibook -lglog -pthread -lboost_thread -lboost_system -lboost_date_time -lrt -lboost_iostreams)
