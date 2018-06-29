@@ -1,3 +1,11 @@
+//
+// Created by HaiNt on 6/30/18.
+//
+
+#ifndef LIQUIBOOK_ASYNCGWPRODUCER_H
+#define LIQUIBOOK_ASYNCGWPRODUCER_H
+
+#endif //LIQUIBOOK_ASYNCGWPRODUCER_H
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,17 +23,14 @@
  * limitations under the License.
  */
 
-#pragma once
 #include <decaf/lang/Thread.h>
 #include <decaf/lang/Runnable.h>
 #include <decaf/util/concurrent/CountDownLatch.h>
-#include <activemq/core/ActiveMQConnectionFactory.h>
-#include <activemq/core/ActiveMQConnection.h>
-#include <activemq/transport/DefaultTransportListener.h>
-#include <activemq/library/ActiveMQCPP.h>
-#include <decaf/lang/Integer.h>
-#include <activemq/util/Config.h>
+#include <decaf/lang/Long.h>
 #include <decaf/util/Date.h>
+#include <activemq/core/ActiveMQConnectionFactory.h>
+#include <activemq/util/Config.h>
+#include <activemq/library/ActiveMQCPP.h>
 #include <cms/Connection.h>
 #include <cms/Session.h>
 #include <cms/TextMessage.h>
@@ -36,11 +41,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-
+#include <memory>
 
 using namespace activemq;
 using namespace activemq::core;
-using namespace activemq::transport;
+using namespace decaf;
 using namespace decaf::lang;
 using namespace decaf::util;
 using namespace decaf::util::concurrent;
@@ -48,65 +53,61 @@ using namespace cms;
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-class AsyncGwConsumer : public ExceptionListener,
-                            public MessageListener,
-                            public DefaultTransportListener {
+class AsynGwProducer : public Runnable {
 private:
 
     Connection* connection;
     Session* session;
     Destination* destination;
-    MessageConsumer* consumer;
+    MessageProducer* producer;
     bool useTopic;
     bool clientAck;
     std::string brokerURI;
     std::string destURI;
 
+private:
+
+    AsynGwProducer( const AsynGwProducer& );
+    AsynGwProducer& operator= ( const AsynGwProducer& );
+
 public:
 
-    AsyncGwConsumer( const std::string& brokerURI,
-                         const std::string& destURI,
-                         bool useTopic = false,
-                         bool clientAck = false ) {
-
-        this->connection = NULL;
-        this->session = NULL;
-        this->destination = NULL;
-        this->consumer = NULL;
-        this->useTopic = useTopic;
-        this->brokerURI = brokerURI;
-        this->destURI = destURI;
-        this->clientAck = clientAck;
+    AsynGwProducer( const std::string& brokerURI,
+                    const std::string& destURI, bool useTopic = false, bool clientAck = false ) :
+        connection(NULL),
+        session(NULL),
+        destination(NULL),
+        producer(NULL),
+        useTopic(useTopic),
+        clientAck(clientAck),
+        \
+        brokerURI(brokerURI),
+        destURI(destURI) {
     }
 
-    virtual ~AsyncGwConsumer(){
-        this->cleanup();
+    virtual ~AsynGwProducer(){
+        cleanup();
     }
 
     void close() {
         this->cleanup();
     }
 
-    void runConsumer() {
-
+    virtual void run() {
         try {
 
             // Create a ConnectionFactory
-            ActiveMQConnectionFactory* connectionFactory =
-                new ActiveMQConnectionFactory( brokerURI );
+            auto_ptr<ActiveMQConnectionFactory> connectionFactory(
+                new ActiveMQConnectionFactory( brokerURI ) );
 
             // Create a Connection
-            connection = connectionFactory->createConnection();
-            delete connectionFactory;
-
-            ActiveMQConnection* amqConnection = dynamic_cast<ActiveMQConnection*>( connection );
-            if( amqConnection != NULL ) {
-                amqConnection->addTransportListener( this );
+            try{
+                connection = connectionFactory->createConnection();
+                connection->start();
+            } catch( CMSException& e ) {
+                e.printStackTrace();
+                throw e;
             }
-
-            connection->start();
-
-            connection->setExceptionListener(this);
 
             // Create a Session
             if( clientAck ) {
@@ -122,75 +123,70 @@ public:
                 destination = session->createQueue( destURI );
             }
 
-            // Create a MessageConsumer from the Session to the Topic or Queue
-            consumer = session->createConsumer( destination );
-            consumer->setMessageListener( this );
+            // Create a MessageProducer from the Session to the Topic or Queue
+            producer = session->createProducer( destination );
+            producer->setDeliveryMode( DeliveryMode::NON_PERSISTENT );
 
-        } catch (CMSException& e) {
+//            // Create the Thread Id String
+//            string threadIdStr = Long::toString( Thread::currentThread()->getId() );
+//
+//            // Create a messages
+//            string text = (string)"Hello world! from thread " + threadIdStr;
+//
+//            for( unsigned int ix=0; ix<numMessages; ++ix ){
+//                TextMessage* message = session->createTextMessage( text );
+//
+//                message->setIntProperty( "Integer", ix );
+//
+//                // Tell the producer to send the message
+//                printf( "Sent message #%d from thread %s\n", ix+1, threadIdStr.c_str() );
+//                producer->send( message );
+//
+//                delete message;
+//            }
+
+        }catch ( CMSException& e ) {
             e.printStackTrace();
         }
     }
 
-    // Called from the consumer since this class is a registered MessageListener.
-    virtual void onMessage( const Message* message );
 
-    // If something bad happens you see it here as this class is also been
-    // registered as an ExceptionListener with the connection.
-    virtual void onException( const CMSException& ex AMQCPP_UNUSED ) {
-        printf("CMS Exception occurred.  Shutting down client.\n");
-        exit(1);
-    }
-
-    virtual void transportInterrupted() {
-        std::cout << "The Connection's Transport has been Interrupted." << std::endl;
-    }
-
-    virtual void transportResumed() {
-        std::cout << "The Connection's Transport has been Restored." << std::endl;
-    }
-
-
-    void start()
+    void send(std::string msg)
     {
-
-
+        TextMessage* message = session->createTextMessage( msg );
+        producer->send( message );
+        delete message;
     }
 
 private:
 
     void cleanup(){
 
-        //*************************************************
-        // Always close destination, consumers and producers before
-        // you destroy their sessions and connection.
-        //*************************************************
-
         // Destroy resources.
         try{
             if( destination != NULL ) delete destination;
-        }catch (CMSException& e) {}
+        }catch ( CMSException& e ) { e.printStackTrace(); }
         destination = NULL;
 
         try{
-            if( consumer != NULL ) delete consumer;
-        }catch (CMSException& e) {}
-        consumer = NULL;
+            if( producer != NULL ) delete producer;
+        }catch ( CMSException& e ) { e.printStackTrace(); }
+        producer = NULL;
 
         // Close open resources.
         try{
             if( session != NULL ) session->close();
             if( connection != NULL ) connection->close();
-        }catch (CMSException& e) {}
+        }catch ( CMSException& e ) { e.printStackTrace(); }
 
-        // Now Destroy them
         try{
             if( session != NULL ) delete session;
-        }catch (CMSException& e) {}
+        }catch ( CMSException& e ) { e.printStackTrace(); }
         session = NULL;
 
         try{
             if( connection != NULL ) delete connection;
-        }catch (CMSException& e) {}
+        }catch ( CMSException& e ) { e.printStackTrace(); }
         connection = NULL;
     }
 };

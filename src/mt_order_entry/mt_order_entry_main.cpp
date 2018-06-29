@@ -13,7 +13,7 @@
 #include <Market.h>
 #include "config/ConfigFile.h"
 #include "cms/AsyncGwConsumer.h"
-
+#include "global/global.h"
 
 using namespace orderentry;
 
@@ -34,34 +34,21 @@ void start_cms()
         //        "&wireFormat.tightEncodingEnabled=true"
         ")";
 
-    //============================================================
-    // This is the Destination Name and URI options.  Use this to
-    // customize where the consumer listens, to have the consumer
-    // use a topic or queue set the 'useTopics' flag.
-    //============================================================
-    std::string destURI = "TEST.FOO1"; //?consumer.prefetchSize=1";
-
-    //============================================================
-    // set to true to use topics instead of queues
-    // Note in the code above that this causes createTopic or
-    // createQueue to be used in the consumer.
-    //============================================================
-    bool useTopics = false;
-
-    //============================================================
-    // set to true if you want the consumer to use client ack mode
-    // instead of the default auto ack mode.
-    //============================================================
-    bool clientAck = false;
+    std::string destURI = "input"; //?consumer.prefetchSize=1";
 
     // Create the consumer
-    AsyncGwConsumer consumer( brokerURI, destURI, useTopics, clientAck );
+    ExtConsumer = new AsyncGwConsumer( brokerURI, destURI, false, false );
+//
+//    // Start it up and it will listen forever.
+    ExtConsumer->runConsumer();
 
-    // Start it up and it will listen forever.
-    consumer.runConsumer();
 
-    char a;
-    std::cin>>a;
+    std::string destURI2 = "output";
+
+    // Create the producer and run it.
+    ExtGwProducer  =new AsynGwProducer( brokerURI, destURI, false );
+    ExtGwProducer->run();
+
 };
 
 int main(int argc, const char * argv[])

@@ -21,11 +21,11 @@ set(CMAKE_CXX_STANDARD 11)
 add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS}
         src/config/ConfigFile.cpp
         src/config/ConfigFile.h
-        global/global.cpp
-        global/global.h
+        src/global/global.cpp
+        src/global/global.h
         src/cms/AsyncGwConsumer.h
 
-        )
+        src/cms/AsyncGwProducer.h src/cms/AsyncGwConsumer.cpp)
 
 
 
