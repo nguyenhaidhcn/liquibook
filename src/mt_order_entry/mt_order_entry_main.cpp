@@ -19,6 +19,8 @@
 
 void start_cms()
 {
+
+
     //init market
     std::ostream * log = &std::cout;
     ExtMarket =  new orderentry::Market(log);
@@ -31,24 +33,25 @@ void start_cms()
     std::cout << "Starting the example:" << std::endl;
     std::cout << "-----------------------------------------------------\n";
 
-    std::string brokerURI =
-        "failover:(tcp://127.0.0.1:61616"
-        //        "?wireFormat=openwire"
-        //        "&connection.useAsyncSend=true"
-        //        "&transport.commandTracingEnabled=true"
-        //        "&transport.tcpTracingEnabled=true"
-        //        "&wireFormat.tightEncodingEnabled=true"
-        ")";
-
-    std::string destURI = "input"; //?consumer.prefetchSize=1";
+//    std::string brokerURI =
+//        "failover:(tcp://127.0.0.1:61616"
+//        //        "?wireFormat=openwire"
+//        //        "&connection.useAsyncSend=true"
+//        //        "&transport.commandTracingEnabled=true"
+//        //        "&transport.tcpTracingEnabled=true"
+//        //        "&wireFormat.tightEncodingEnabled=true"
+//        ")";
+    std::string brokerURI = ConfigFile::getInstance()->Value("Activemq","brokerURI");
+    std::string destURI = ConfigFile::getInstance()->Value("Activemq","queue.orderRequest");
+    //?consumer.prefetchSize=1";
 
     // Create the consumer
     ExtConsumer = new CmsConsumer( brokerURI, destURI, false, false );
 
-    std::string destURI2 = "output";
+    std::string destURI2 = ConfigFile::getInstance()->Value("Activemq","topic.orderResponse");
 
     // Create the producer and run it.
-    ExtGwProducer  =new AsynGwProducer( brokerURI, destURI2, false );
+    ExtGwProducer  =new AsynGwProducer( brokerURI, destURI2, false , false);
     ExtGwProducer->run();
 //
 //    // Start it up and it will listen forever.
@@ -61,6 +64,7 @@ void start_cms()
 
 int main(int argc, const char * argv[])
 {
+//    google::InitGoogleLogging("liquibook");
 
     auto config = ConfigFile::getInstance();
     DLOG(INFO)<<config;
