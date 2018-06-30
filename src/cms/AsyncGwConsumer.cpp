@@ -38,6 +38,7 @@
 #include "AsyncGwConsumer.h"
 
 #include "global/global.h"
+#include "Market.h"
 
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
@@ -65,7 +66,7 @@ void AsyncGwConsumer::onMessage( const Message* message ){
             message->acknowledge();
         }
 
-        printf( "Message #%d Received: %s\n", count, text.c_str() );
+//        printf( "Message #%d Received: %s\n", count, text.c_str() );
 
         LOG(INFO)<<"Received:" <<text;
         //std::istringstream request_json(text);
@@ -108,6 +109,13 @@ orderentry::Order AsyncGwConsumer::ProcessOrder(std::string input)
     auto price = pt.get<int32_t > ("price");
     LOG(INFO)<<price;
 
+    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+
+    const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
+    const liquibook::book::OrderConditions IOC(liquibook::book::oc_immediate_or_cancel);
+    const liquibook::book::OrderConditions NOC(liquibook::book::oc_no_conditions);
+
+
 //    return
 //     orderentry::Order  order(
 //        pt.get<int32_t > ("loginId"),
@@ -134,5 +142,5 @@ orderentry::Order AsyncGwConsumer::ProcessOrder(std::string input)
 //    );
 //
 //     LOG(INFO)<<order;
-//    return order;
+    return *order;
 }
