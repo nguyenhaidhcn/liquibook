@@ -37,6 +37,13 @@
 #include <stdio.h>
 #include <iostream>
 
+#include <sstream>
+#include <map>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+
+#include "mt_order_entry/Order.h"
 
 using namespace activemq;
 using namespace activemq::core;
@@ -150,11 +157,7 @@ public:
     }
 
 
-    void start()
-    {
-
-
-    }
+    orderentry::Order ProcessOrder(std::string input);
 
 private:
 

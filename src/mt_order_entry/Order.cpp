@@ -8,22 +8,25 @@
 namespace orderentry
 {
 
-Order::Order(const std::string & id,
+Order::Order(
+    const int32_t loginId,
+    const std::string & id,
     bool buy_side,
     liquibook::book::Quantity quantity,
     std::string symbol,
     liquibook::book::Price price,
     liquibook::book::Price stopPrice,
-    bool aon,
-    bool ioc)
-    : id_(id)
+    bool all_or_none,
+    bool is_cancel)
+    :loginId_(loginId)
+    ,id_(id)
     , buy_side_(buy_side)
     , symbol_(symbol)
     , quantity_(quantity)
     , price_(price)
     , stopPrice_(stopPrice)
-    , ioc_(ioc)
-    , aon_(aon)
+    , is_cancel(is_cancel)
+    , all_or_none_(all_or_none)
     , quantityFilled_(0)
     , quantityOnMarket_(0)
     , fillCost_(0)
@@ -53,13 +56,13 @@ Order::is_buy() const
 bool 
 Order::all_or_none() const
 {
-    return aon_;
+    return all_or_none_;
 }
 
 bool 
 Order::immediate_or_cancel() const
 {
-    return ioc_;
+    return is_cancel;
 }
 
 std::string 
@@ -106,13 +109,13 @@ Order::fillCost() const
 }
 
 
-const Order::History & 
+const History &
 Order::history() const
 {
     return history_;
 }
 
-const Order::StateChange & 
+const StateChange &
 Order::currentState() const
 {
     return history_.back();
@@ -234,46 +237,51 @@ Order::onReplaceRejected(const char * reason)
 {
     history_.emplace_back(StateChange(ModifyRejected, reason));
 }
+int32_t
+Order::getLoginId_() const
+{
+    return loginId_;
+}
 
-std::ostream & operator << (std::ostream & out, const Order::StateChange & event)
+std::ostream & operator << (std::ostream & out, const StateChange & event)
 {
     DLOG(INFO) << "{";
     switch(event.state_)
     {
-    case Order::Submitted:
+    case Submitted:
         DLOG(INFO) << "Submitted ";
         break;
-    case Order::Rejected:
+    case Rejected:
         DLOG(INFO) << "Rejected ";
         break;
-    case Order::Accepted:
+    case Accepted:
         DLOG(INFO) << "Accepted ";
         break;
-    case Order::ModifyRequested:
+    case ModifyRequested:
         DLOG(INFO) << "ModifyRequested ";
         break;
-    case Order::ModifyRejected:
+    case ModifyRejected:
         DLOG(INFO) << "ModifyRejected ";
         break;
-    case Order::Modified:
+    case Modified:
         DLOG(INFO) << "Modified ";
         break;
-    case Order::PartialFilled:
+    case PartialFilled:
         DLOG(INFO) << "PartialFilled ";
         break;
-    case Order::Filled:
+    case Filled:
         DLOG(INFO) << "Filled ";
         break;
-    case Order::CancelRequested:
+    case CancelRequested:
         DLOG(INFO) << "CancelRequested ";
         break;
-    case Order::CancelRejected:
+    case CancelRejected:
         DLOG(INFO) << "CancelRejected ";
         break;
-    case Order::Cancelled:
+    case Cancelled:
         DLOG(INFO) << "Cancelled ";
         break;
-    case Order::Unknown:
+    case Unknown:
         DLOG(INFO) << "Unknown ";
         break;
     }
@@ -326,7 +334,7 @@ std::ostream & operator << (std::ostream & out, const Order & order)
 
     if(order.isVerbose())
     {
-        const Order::History & history = order.history();
+        const History & history = order.history();
         for(auto event = history.begin(); event != history.end(); ++event)
         {
             ss << "\n\t" << *event;

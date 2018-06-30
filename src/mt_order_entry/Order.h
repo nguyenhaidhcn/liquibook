@@ -8,51 +8,27 @@
 
 #include <string>
 #include <vector>
-
+#include "MatchingEngineAPI.h"
 namespace orderentry
 {
 
 class Order
 {
 public:
-    enum State{
-        Submitted,
-        Rejected, // Terminal state
-        Accepted,
-        ModifyRequested,
-        ModifyRejected,
-        Modified,
-        PartialFilled,
-        Filled, // Terminal State
-        CancelRequested,
-        CancelRejected,
-        Cancelled, // Terminal state
-        Unknown
-    };
 
-    struct StateChange
-    {
-        State state_;
-        std::string description_;
-        StateChange()
-          : state_(Unknown)
-          {}
 
-        StateChange(State state, const std::string & description = "")
-            : state_(state)
-            , description_(description)
-        {}
-    };    
-    typedef std::vector<StateChange> History;
+
 public:
-    Order(const std::string & id,
+    Order(
+        const int32_t loginId,
+        const std::string & id,
         bool buy_side,
         liquibook::book::Quantity quantity,
         std::string symbol,
         liquibook::book::Price price,
         liquibook::book::Price stopPrice,
-        bool aon,
-        bool ioc);
+        bool all_or_none,
+        bool is_cancel);
 
     //////////////////////////
     // Implement the 
@@ -94,6 +70,8 @@ public:
 
     uint32_t fillCost() const;
 
+    int32_t getLoginId_() const;
+
     Order & verbose(bool verbose = true);
     bool isVerbose()const;
     const History & history() const;
@@ -124,14 +102,15 @@ public:
 
 private:
     std::string id_;
+    int32_t  loginId_;
     bool buy_side_;
     std::string symbol_;
     liquibook::book::Quantity quantity_;
     liquibook::book::Price price_;
     liquibook::book::Price stopPrice_;
 
-    bool aon_;
-    bool ioc_;
+    bool all_or_none_;
+    bool is_cancel;
 
     liquibook::book::Quantity quantityFilled_;
     int32_t quantityOnMarket_;
@@ -142,6 +121,6 @@ private:
 };
 
 std::ostream & operator << (std::ostream & out, const Order & order);
-std::ostream & operator << (std::ostream & out, const Order::StateChange & event);
+std::ostream & operator << (std::ostream & out, const StateChange & event);
 
 }

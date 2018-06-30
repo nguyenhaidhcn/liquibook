@@ -297,7 +297,9 @@ bool Market::doAdd(const  std::string & side, const std::vector<std::string> & t
 
     std::string orderId = NumberToString(++orderIdSeed_);
 
-    OrderPtr order = std::make_shared<Order>(orderId, side == "BUY", quantity, symbol, price, stopPrice, aon, ioc);
+    //TODO check init order add login
+        int32_t loginId = 1;
+    OrderPtr order = std::make_shared<Order>(loginId, orderId, side == "BUY", quantity, symbol, price, stopPrice, aon, ioc);
 
     const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
     const liquibook::book::OrderConditions IOC(liquibook::book::oc_immediate_or_cancel);

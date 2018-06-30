@@ -15,7 +15,7 @@
 #include "cms/AsyncGwConsumer.h"
 #include "global/global.h"
 
-using namespace orderentry;
+//using namespace orderentry;
 
 void start_cms()
 {
@@ -100,8 +100,8 @@ int main(int argc, const char * argv[])
         log = & logFile;
     }
 
-    Market * market;
-    market = new Market(log);
+    orderentry::Market * market;
+    market = new orderentry::Market(log);
 
 
     while( !done)
@@ -133,7 +133,7 @@ int main(int argc, const char * argv[])
         {
             if(prompt)
             {
-                DLOG(INFO) << "Action[" << Market::prompt()
+                DLOG(INFO) << "Action[" << orderentry::Market::prompt()
                           << "\t(?)    help for more options and detail.\n"
                           << "\t(Quit) ]\n";
                 prompt = false;
@@ -171,7 +171,7 @@ int main(int argc, const char * argv[])
         }
 
         std::vector< std::string> words;
-        split(input," \t\v\n\r", words);
+        orderentry::split(input," \t\v\n\r", words);
         if(!words.empty())
         {
             const std::string command = words[0];
