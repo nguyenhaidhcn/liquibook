@@ -157,7 +157,7 @@ public:
     }
 
 
-    orderentry::Order ProcessOrder(std::string input);
+    orderentry::OrderPtr ProcessOrder(std::string input);
 
 private:
 

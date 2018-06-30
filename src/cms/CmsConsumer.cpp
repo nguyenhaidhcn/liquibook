@@ -81,7 +81,7 @@ void CmsConsumer::onMessage( const Message* message ){
 }
 
 
-orderentry::Order CmsConsumer::ProcessOrder(std::string input)
+orderentry::OrderPtr CmsConsumer::ProcessOrder(std::string input)
 {
     LOG(INFO)<<input;
 
@@ -114,7 +114,7 @@ orderentry::Order CmsConsumer::ProcessOrder(std::string input)
 //    LOG(INFO)<<price;
 
 //    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
-    orderentry::Order order(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
 //    LOG(INFO)<<(order);
 
 //    const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);

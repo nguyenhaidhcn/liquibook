@@ -48,8 +48,10 @@ public:
     /// @brief Apply a user command that has been parsed into tokens.
     bool apply(const std::vector<std::string> & tokens);
 
-    void Process(orderentry::Order order);
-
+    void Process(orderentry::OrderPtr order);
+    void NewOrder(orderentry::OrderPtr order);
+    void CancelOrder(orderentry::OrderPtr order);
+    void ModifyOrder(orderentry::OrderPtr order);
 
 public:
     /////////////////////////////////////
@@ -130,6 +132,11 @@ private:
     bool findExistingOrder(const std::vector<std::string> & tokens, size_t & position, OrderPtr & order, OrderBookPtr & book);
     bool findExistingOrder(const std::string & orderId, OrderPtr & order, OrderBookPtr & book);
 
+    std::string orderToJson(const OrderPtr& order)
+    {
+        //TODO convert orderInfo to json
+        return "TODO convert orderInfo to json";
+    }
     std::ostream & out() 
     {
         return *logFile_;

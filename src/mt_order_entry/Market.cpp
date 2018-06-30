@@ -7,6 +7,7 @@
 #include <functional> 
 #include <cctype>
 #include <locale>
+#include "global/global.h"
 
 namespace
 {
@@ -647,7 +648,12 @@ bool Market::findExistingOrder(const std::string & orderId, OrderPtr & order, Or
 void Market::on_accept(const OrderPtr& order)
 {
     order->onAccepted();
-    LOG(INFO) << "\tAccepted: " <<*order<< std::endl;
+    LOG(INFO) << "\t on_accept: " <<order->symbol()<< std::endl;
+
+    auto msg =  this->orderToJson(order);
+
+    ExtGwProducer->send(msg);
+
 }
 
 void Market::on_reject(const OrderPtr& order, const char* reason)
@@ -750,14 +756,15 @@ void Market::on_depth_change(const DepthOrderBook * book, const BookDepth * dept
 }
 
 
-
-void Market::Process(orderentry::Order order)
+//check order kind
+void Market::Process(orderentry::OrderPtr order)
 {
-    switch (order.requestType_)
+    switch (order->requestType_)
     {
         case RequestType ::RequestNew:
         {
-            LOG(INFO)<<"TODO add new order";
+            LOG(INFO)<<"add new order";
+            this->NewOrder(order);
             break;
         }
 
@@ -775,9 +782,56 @@ void Market::Process(orderentry::Order order)
 
         default:
         {
-            LOG(INFO)<<"Not support requestType:"<<order.requestType_;
+            LOG(INFO)<<"Not support requestType:"<<order->requestType_;
         }
     }
+}
+
+//place new order
+
+void Market::NewOrder(orderentry::OrderPtr order)
+{
+    //////////////
+    // SYMBOL
+    std::string symbol = order->symbol();
+    if(symbol.empty())
+    {
+//        symbol = promptForString("Symbol");
+        LOG(INFO)<<"Symbol empty";
+        return;
+    }
+    if(!symbolIsDefined(symbol))
+    {
+        LOG(INFO)<<"add new symbol:"<<symbol;
+        bool useDepth = true;
+        addBook(symbol, useDepth);
+    }
+
+    ///////////////
+    // PRICE
+    uint32_t price = 0;
+    price = order->price();
+
+    if(price > 10000000)
+    {
+        LOG(INFO) << "--Bad price: Expecting price or MARKET"<<price << std::endl;
+        return;
+    }
+
+    std::string orderId = NumberToString(++orderIdSeed_);
+
+    auto book = findBook(symbol);
+    if(!book)
+    {
+        LOG(INFO) << "--No order book for symbol" << symbol << std::endl;
+        return;
+    }
+
+    order->onSubmitted();
+    LOG(INFO) << "ADDING order:  " << order->order_id() << std::endl;
+
+    orders_[orderId] = order;
+    book->add(order, 0);
 }
 
 }  // namespace orderentry
