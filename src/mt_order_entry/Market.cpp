@@ -299,7 +299,7 @@ bool Market::doAdd(const  std::string & side, const std::vector<std::string> & t
 
     //TODO check init order add login
         int32_t loginId = 1;
-    OrderPtr order = std::make_shared<Order>(loginId, orderId, side == "BUY", quantity, symbol, price, stopPrice, aon, ioc);
+    OrderPtr order = std::make_shared<Order>(0,loginId, orderId, side == "BUY", quantity, symbol, price, stopPrice, aon, ioc);
 
     const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
     const liquibook::book::OrderConditions IOC(liquibook::book::oc_immediate_or_cancel);
@@ -747,6 +747,37 @@ void Market::on_depth_change(const DepthOrderBook * book, const BookDepth * dept
         << " Published: " << depth->last_published_change();
     publishDepth(out(), *depth);
     LOG(INFO) << std::endl;
+}
+
+
+
+void Market::Process(orderentry::Order order)
+{
+    switch (order.requestType_)
+    {
+        case RequestType ::RequestNew:
+        {
+            LOG(INFO)<<"TODO add new order";
+            break;
+        }
+
+        case RequestType ::RequestCancel:
+        {
+            LOG(INFO)<<"TODO cancel";
+            break;
+        }
+
+        case RequestType ::RequestMofiy:
+        {
+            LOG(INFO)<<"TODO modify order";
+            break;
+        }
+
+        default:
+        {
+            LOG(INFO)<<"Not support requestType:"<<order.requestType_;
+        }
+    }
 }
 
 }  // namespace orderentry

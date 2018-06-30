@@ -5,5 +5,6 @@
 #include "global.h"
 
 
-AsyncGwConsumer *ExtConsumer;
+CmsConsumer *ExtConsumer;
 AsynGwProducer *ExtGwProducer;
+orderentry::Market * ExtMarket;

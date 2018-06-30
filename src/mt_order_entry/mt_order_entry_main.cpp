@@ -12,13 +12,19 @@
 #include <iterator>
 #include <Market.h>
 #include "config/ConfigFile.h"
-#include "cms/AsyncGwConsumer.h"
+#include "cms/CmsConsumer.h"
 #include "global/global.h"
 
 //using namespace orderentry;
 
 void start_cms()
 {
+    //init market
+    std::ostream * log = &std::cout;
+    ExtMarket =  new orderentry::Market(log);
+
+    //init activemq
+
     activemq::library::ActiveMQCPP::initializeLibrary();
 
     std::cout << "=====================================================\n";
@@ -37,7 +43,7 @@ void start_cms()
     std::string destURI = "input"; //?consumer.prefetchSize=1";
 
     // Create the consumer
-    ExtConsumer = new AsyncGwConsumer( brokerURI, destURI, false, false );
+    ExtConsumer = new CmsConsumer( brokerURI, destURI, false, false );
 
     std::string destURI2 = "output";
 

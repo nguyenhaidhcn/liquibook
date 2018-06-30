@@ -55,7 +55,7 @@ using namespace cms;
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-class AsyncGwConsumer : public ExceptionListener,
+class CmsConsumer : public ExceptionListener,
                             public MessageListener,
                             public DefaultTransportListener {
 private:
@@ -71,7 +71,7 @@ private:
 
 public:
 
-    AsyncGwConsumer( const std::string& brokerURI,
+    CmsConsumer( const std::string& brokerURI,
                          const std::string& destURI,
                          bool useTopic = false,
                          bool clientAck = false ) {
@@ -86,7 +86,7 @@ public:
         this->clientAck = clientAck;
     }
 
-    virtual ~AsyncGwConsumer(){
+    virtual ~CmsConsumer(){
         this->cleanup();
     }
 

@@ -9,6 +9,18 @@
 #include <string>
 #include <vector>
 #include "MatchingEngineAPI.h"
+
+//
+//{
+//"orderID":"24",
+//"loginID":12,
+//"cmd":1,
+//"quantity":2,
+//"symbol":"ETH/BTC",
+//"price":24,
+//"stopPrice":25,
+//"is_cancel":0
+//}
 namespace orderentry
 {
 
@@ -20,6 +32,7 @@ public:
 
 public:
     Order(
+        int requestType,
         const int32_t loginId,
         const std::string & id,
         bool buy_side,
@@ -61,8 +74,10 @@ public:
     virtual bool immediate_or_cancel() const;
 
     std::string symbol() const;
+    std::string symbolKey(){return "symbol";}
 
     std::string order_id() const;
+    std::string orderIDKey(){return "orderID";}
 
     uint32_t quantityFilled() const;
 
@@ -100,7 +115,11 @@ public:
 
     void onReplaceRejected(const char * reaseon);
 
+    //new order, cancel, modify
+    int requestType_;
+
 private:
+
     std::string id_;
     int32_t  loginId_;
     bool buy_side_;

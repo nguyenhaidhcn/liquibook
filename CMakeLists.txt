@@ -23,9 +23,9 @@ add_executable(liquibook src/mt_order_entry/mt_order_entry_main.cpp ${SRCS}
         src/config/ConfigFile.h
         src/global/global.cpp
         src/global/global.h
-        src/cms/AsyncGwConsumer.h
+        src/cms/CmsConsumer.h
 
-        src/cms/AsyncGwProducer.h src/cms/AsyncGwConsumer.cpp src/book/MatchingEngineAPI.h)
+        src/cms/CmsProducer.h src/cms/CmsConsumer.cpp src/book/MatchingEngineAPI.h)
 
 
 

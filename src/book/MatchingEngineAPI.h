@@ -21,6 +21,15 @@ enum State{
     Unknown
 };
 
+//use for filler request
+enum RequestType
+{
+    RequestCancel,
+    RequestNew,
+    RequestMofiy
+};
+
+//
 enum OrderSide
 {
     OP_SELL,

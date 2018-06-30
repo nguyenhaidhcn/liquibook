@@ -4,10 +4,13 @@
 
 #ifndef LIQUIBOOK_GLOBAL_H
 #define LIQUIBOOK_GLOBAL_H
-#include "cms/AsyncGwConsumer.h"
-#include "cms/AsyncGwProducer.h"
-extern AsyncGwConsumer *ExtConsumer;
+#include "cms/CmsConsumer.h"
+#include "cms/CmsProducer.h"
+#include "Market.h"
+
+extern CmsConsumer *ExtConsumer;
 extern AsynGwProducer *ExtGwProducer;
 
+extern orderentry::Market * ExtMarket;
 
 #endif //LIQUIBOOK_GLOBAL_H

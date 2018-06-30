@@ -9,6 +9,7 @@ namespace orderentry
 {
 
 Order::Order(
+    const int requestType,
     const int32_t loginId,
     const std::string & id,
     bool buy_side,
@@ -18,7 +19,8 @@ Order::Order(
     liquibook::book::Price stopPrice,
     bool all_or_none,
     bool is_cancel)
-    :loginId_(loginId)
+    :requestType_(requestType),
+    loginId_(loginId)
     ,id_(id)
     , buy_side_(buy_side)
     , symbol_(symbol)

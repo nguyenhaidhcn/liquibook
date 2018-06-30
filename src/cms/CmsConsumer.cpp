@@ -35,7 +35,7 @@
 //    write_json (buf, pt, false);
 //    return buf.str();
 //}
-#include "AsyncGwConsumer.h"
+#include "CmsConsumer.h"
 
 #include "global/global.h"
 #include "Market.h"
@@ -45,7 +45,7 @@ using boost::property_tree::read_json;
 using boost::property_tree::write_json;
 
 
-void AsyncGwConsumer::onMessage( const Message* message ){
+void CmsConsumer::onMessage( const Message* message ){
 
     static int count = 0;
 
@@ -70,7 +70,7 @@ void AsyncGwConsumer::onMessage( const Message* message ){
 
         LOG(INFO)<<"Received:" <<text;
         //std::istringstream request_json(text);
-//        this->ProcessOrder(text);
+        this->ProcessOrder(text);
         //resend
 //        ExtGwProducer->send(text);
 
@@ -81,7 +81,7 @@ void AsyncGwConsumer::onMessage( const Message* message ){
 }
 
 
-orderentry::Order AsyncGwConsumer::ProcessOrder(std::string input)
+orderentry::Order CmsConsumer::ProcessOrder(std::string input)
 {
     LOG(INFO)<<input;
 
@@ -91,56 +91,36 @@ orderentry::Order AsyncGwConsumer::ProcessOrder(std::string input)
 
 //    orderentry::Order order();
 
-    auto loginID = pt.get<int32_t > ("loginID");
-    LOG(INFO)<<loginID;
 
-    auto cmd = pt.get<int32_t > ("cmd");
-    LOG(INFO)<<cmd;
+    auto requestType = pt.get<int32_t > ("requestType",-1);
+//    LOG(INFO)<<requestType;
 
-    auto quantity = pt.get<int32_t > ("quantity");
-    LOG(INFO)<<quantity;
+    auto loginID = pt.get<int32_t > ("loginID",-1);
+//    LOG(INFO)<<loginID;
 
-    auto symbol = pt.get<std::string > ("symbol");
-    LOG(INFO)<<symbol;
+    auto cmd = pt.get<int32_t > ("cmd",-1);
+//    LOG(INFO)<<cmd;
 
-    auto orderID = pt.get<std::string > ("orderID");
-    LOG(INFO)<<orderID;
+    auto quantity = pt.get<int32_t > ("quantity",-1);
+//    LOG(INFO)<<quantity;
 
-    auto price = pt.get<int32_t > ("price");
-    LOG(INFO)<<price;
+    auto symbol = pt.get<std::string > ("symbol","");
+//    LOG(INFO)<<symbol;
 
-    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+    auto orderID = pt.get<std::string > ("orderID","");
+//    LOG(INFO)<<orderID;
 
-    const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
-    const liquibook::book::OrderConditions IOC(liquibook::book::oc_immediate_or_cancel);
-    const liquibook::book::OrderConditions NOC(liquibook::book::oc_no_conditions);
+    auto price = pt.get<int32_t > ("price",-1);
+//    LOG(INFO)<<price;
 
+//    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+    orderentry::Order order(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+//    LOG(INFO)<<(order);
 
-//    return
-//     orderentry::Order  order(
-//        pt.get<int32_t > ("loginId"),
-//        pt.get<std::string > ("orderID"),
-//        pt.get<int32_t >("cmd"),
-//        pt.get<int32_t >("quantity"),
-//        pt.get<std::string >("symbol"),
-//        pt.get<int32_t >("price"),
-//        0,
-//        0,
-//        0
-//    );
+//    const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
+//    const liquibook::book::OrderConditions IOC(liquibook::book::oc_immediate_or_cancel);
+//    const liquibook::book::OrderConditions NOC(liquibook::book::oc_no_conditions);
+    ExtMarket->Process(order);
 
-//         orderentry::Order  order(
-//        loginID,
-//        orderID,
-//        cmd,
-//        quantity,
-//        symbol,
-//        price,
-//        false,
-//        false,
-//        false
-//    );
-//
-//     LOG(INFO)<<order;
-    return *order;
+    return order;
 }

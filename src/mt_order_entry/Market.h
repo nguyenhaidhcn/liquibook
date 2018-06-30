@@ -48,6 +48,9 @@ public:
     /// @brief Apply a user command that has been parsed into tokens.
     bool apply(const std::vector<std::string> & tokens);
 
+    void Process(orderentry::Order order);
+
+
 public:
     /////////////////////////////////////
     // Implement OrderListener interface
