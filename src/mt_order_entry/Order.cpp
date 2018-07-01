@@ -7,10 +7,13 @@
 #include <string>
 
 #include "global/global.h"
+#include "json.hpp"
 
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
 using boost::property_tree::write_json;
+
+using namespace nlohmann;
 
 #define REQUEST_TYPE_KEY            "requestType"
 #define LOGIN_ID_KEY                "loginID"
@@ -21,6 +24,7 @@ using boost::property_tree::write_json;
 #define PRICE_KEY                   "price"
 #define MSG_CODE_KEY                   "msgCode"
 #define MESSAGE_KEY                   "message"
+
 
 
 namespace orderentry
@@ -58,28 +62,19 @@ Order::Order(
 
 std::string Order::GetJson()
 {
-//    // Write json.
-//    ptree pt;
-//    pt.put ("foo", "bar");
-//    std::ostringstream buf;
-//    write_json (buf, pt, false);
-//    std::string json = buf.str();
+    json j = json{
+        {LOGIN_ID_KEY, this->loginId_},
+        {ORDER_ID_KEY, this->order_id()},
+        {QUANTITY_KEY, this->quantity_},
+        {CMD_KEY, this->is_buy()},
+        {SYMBOL_KEY, this->symbol_.c_str()},
+        {PRICE_KEY, this->price_},
+        {MSG_CODE_KEY, this->msgCode_},
+        {MESSAGE_KEY, this->msgInfo_}
+    };
 
-    ptree pt;
-    pt.put(LOGIN_ID_KEY,this->loginId_);
-    pt.put(ORDER_ID_KEY, this->order_id());
-    pt.put(QUANTITY_KEY, this->quantity_);
-    pt.put(CMD_KEY, this->is_buy());
-    pt.put(SYMBOL_KEY, this->symbol_.c_str());
-    pt.put(PRICE_KEY, this->price_);
-    pt.put(MSG_CODE_KEY, this->msgCode_);
-    pt.put(MESSAGE_KEY, this->msgInfo_);
-
-    std::ostringstream buf;
-    write_json(buf, pt, false);
-
-    LOG(INFO)<<buf.str();
-    return buf.str();
+    LOG(INFO)<<j;
+    return j;
 
 
 }
@@ -118,6 +113,9 @@ OrderPtr Order::InitOrderPtr(std::string input)
 
 //    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
     orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+
+
+
 
     return order;
 }
