@@ -693,7 +693,7 @@ void Market::on_replace(const OrderPtr& order,
     liquibook::book::Price new_price)
 {
     order->onReplaced(size_delta, new_price);
-    LOG(INFO) << "\tModify " ;
+    LOG(INFO) << "\ton_replace Modify " ;
     if(size_delta != liquibook::book::SIZE_UNCHANGED)
     {
         LOG(INFO) << " QUANTITY  += " << size_delta;
@@ -708,7 +708,7 @@ void Market::on_replace(const OrderPtr& order,
 void Market::on_replace_reject(const OrderPtr& order, const char* reason)
 {
     order->onReplaceRejected(reason);
-    LOG(INFO) << "\tReplace Reject: " <<*order<< ' ' << reason << std::endl;
+    LOG(INFO) << "\ton_replace_reject: " <<*order<< ' ' << reason << std::endl;
 }
 
 ////////////////////////////////////
@@ -718,7 +718,7 @@ void Market::on_trade(const OrderBook* book,
     liquibook::book::Quantity qty, 
     liquibook::book::Cost cost)
 {
-    LOG(INFO) << "\tTrade: " << qty <<  ' ' << book->symbol() << " Cost "  << cost  << std::endl;
+    LOG(INFO) << "\ton_trade: " << qty <<  ' ' << book->symbol() << " Cost "  << cost  << std::endl;
 }
 
 /////////////////////////////////////////
@@ -726,7 +726,7 @@ void Market::on_trade(const OrderBook* book,
 
 void Market::on_order_book_change(const OrderBook* book)
 {
-    LOG(INFO) << "\tBook Change: " << ' ' << book->symbol() << std::endl;
+    LOG(INFO) << "\t on_order_book_change: " << ' ' << book->symbol() << std::endl;
 }
 
 
