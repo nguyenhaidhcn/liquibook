@@ -650,7 +650,7 @@ void Market::on_accept(const OrderPtr& order)
     order->onAccepted();
     LOG(INFO) << "\t on_accept: " <<order->symbol()<< std::endl;
 
-    auto msg =  this->orderToJson(order);
+    auto msg =  order->GetJson();
 
     ExtGwProducer->send(msg);
 
@@ -782,7 +782,11 @@ void Market::Process(orderentry::OrderPtr order)
 
         default:
         {
-            LOG(INFO)<<"Not support requestType:"<<order->requestType_;
+            std::stringstream ss;
+            ss  <<"Not support requestType:"<<order->requestType_;
+            LOG(INFO)<<ss.str();
+            order->msgInfo_= ss.str();
+            ExtGwProducer->send(order->GetJson());
         }
     }
 }

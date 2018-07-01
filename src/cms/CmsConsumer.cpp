@@ -83,44 +83,45 @@ void CmsConsumer::onMessage( const Message* message ){
 
 orderentry::OrderPtr CmsConsumer::ProcessOrder(std::string input)
 {
-    LOG(INFO)<<input;
-
-    std::istringstream request_json(input);
-    boost::property_tree::ptree pt;
-    boost::property_tree::read_json(request_json, pt);
-
-//    orderentry::Order order();
-
-
-    auto requestType = pt.get<int32_t > ("requestType",-1);
-//    LOG(INFO)<<requestType;
-
-    auto loginID = pt.get<int32_t > ("loginID",-1);
-//    LOG(INFO)<<loginID;
-
-    auto cmd = pt.get<int32_t > ("cmd",-1);
-//    LOG(INFO)<<cmd;
-
-    auto quantity = pt.get<long double > ("quantity",-1);
-//    LOG(INFO)<<quantity;
-
-    auto symbol = pt.get<std::string > ("symbol","");
-//    LOG(INFO)<<symbol;
-
-    auto orderID = pt.get<std::string > ("orderID","");
-//    LOG(INFO)<<orderID;
-
-    auto price = pt.get<long double > ("price",-1);
-//    LOG(INFO)<<price;
-
+//    LOG(INFO)<<input;
+//
+//    std::istringstream request_json(input);
+//    boost::property_tree::ptree pt;
+//    boost::property_tree::read_json(request_json, pt);
+//
+////    orderentry::Order order();
+//
+//
+//    auto requestType = pt.get<int32_t > ("requestType",-1);
+////    LOG(INFO)<<requestType;
+//
+//    auto loginID = pt.get<int32_t > ("loginID",-1);
+////    LOG(INFO)<<loginID;
+//
+//    auto cmd = pt.get<int32_t > ("cmd",-1);
+////    LOG(INFO)<<cmd;
+//
+//    auto quantity = pt.get<long double > ("quantity",-1);
+////    LOG(INFO)<<quantity;
+//
+//    auto symbol = pt.get<std::string > ("symbol","");
+////    LOG(INFO)<<symbol;
+//
+//    auto orderID = pt.get<std::string > ("orderID","");
+////    LOG(INFO)<<orderID;
+//
+//    auto price = pt.get<long double > ("price",-1);
+////    LOG(INFO)<<price;
+//
+////    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
 //    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
-    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
-//    LOG(INFO)<<(order);
+////    LOG(INFO)<<(order);
 
+    auto orderptr =  orderentry::Order::InitOrderPtr(input);
 //    const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
 //    const liquibook::book::OrderConditions IOC(liquibook::book::oc_immediate_or_cancel);
 //    const liquibook::book::OrderConditions NOC(liquibook::book::oc_no_conditions);
-    ExtMarket->Process(order);
+    ExtMarket->Process(orderptr);
 
-    return order;
+    return orderptr;
 }

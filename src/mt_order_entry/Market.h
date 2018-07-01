@@ -132,11 +132,6 @@ private:
     bool findExistingOrder(const std::vector<std::string> & tokens, size_t & position, OrderPtr & order, OrderBookPtr & book);
     bool findExistingOrder(const std::string & orderId, OrderPtr & order, OrderBookPtr & book);
 
-    std::string orderToJson(const OrderPtr& order)
-    {
-        //TODO convert orderInfo to json
-        return "TODO convert orderInfo to json";
-    }
     std::ostream & out() 
     {
         return *logFile_;

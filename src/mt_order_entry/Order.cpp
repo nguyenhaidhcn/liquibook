@@ -5,6 +5,24 @@
 #include <sstream>
 #include <strstream>
 #include <string>
+
+#include "global/global.h"
+
+using boost::property_tree::ptree;
+using boost::property_tree::read_json;
+using boost::property_tree::write_json;
+
+#define REQUEST_TYPE_KEY            "requestType"
+#define LOGIN_ID_KEY                "loginID"
+#define CMD_KEY                     "cmd"
+#define QUANTITY_KEY                "quantity"
+#define SYMBOL_KEY                  "symbol"
+#define ORDER_ID_KEY                "orderID"
+#define PRICE_KEY                   "price"
+#define MSG_CODE_KEY                   "msgCode"
+#define MESSAGE_KEY                   "message"
+
+
 namespace orderentry
 {
 
@@ -33,8 +51,75 @@ Order::Order(
     , quantityOnMarket_(0)
     , fillCost_(0)
     , verbose_(false)
+    ,msgCode_(0)
 
 {
+}
+
+std::string Order::GetJson()
+{
+//    // Write json.
+//    ptree pt;
+//    pt.put ("foo", "bar");
+//    std::ostringstream buf;
+//    write_json (buf, pt, false);
+//    std::string json = buf.str();
+
+    ptree pt;
+    pt.put(LOGIN_ID_KEY,this->loginId_);
+    pt.put(ORDER_ID_KEY, this->order_id());
+    pt.put(QUANTITY_KEY, this->quantity_);
+    pt.put(CMD_KEY, this->is_buy());
+    pt.put(SYMBOL_KEY, this->symbol_.c_str());
+    pt.put(PRICE_KEY, this->price_);
+    pt.put(MSG_CODE_KEY, this->msgCode_);
+    pt.put(MESSAGE_KEY, this->msgInfo_);
+
+    std::ostringstream buf;
+    write_json(buf, pt, false);
+
+    LOG(INFO)<<buf.str();
+    return buf.str();
+
+
+}
+
+OrderPtr Order::InitOrderPtr(std::string input)
+{
+    LOG(INFO)<<input;
+
+    std::istringstream request_json(input);
+    boost::property_tree::ptree pt;
+    boost::property_tree::read_json(request_json, pt);
+
+//    orderentry::Order order();
+
+
+    auto requestType = pt.get<int32_t > (REQUEST_TYPE_KEY,-1);
+//    LOG(INFO)<<requestType;
+
+    auto loginID = pt.get<int32_t > (LOGIN_ID_KEY,-1);
+//    LOG(INFO)<<loginID;
+
+    auto cmd = pt.get<int32_t > (CMD_KEY,-1);
+//    LOG(INFO)<<cmd;
+
+    auto quantity = pt.get<long double > (QUANTITY_KEY,-1);
+//    LOG(INFO)<<quantity;
+
+    auto symbol = pt.get<std::string > (SYMBOL_KEY,"");
+//    LOG(INFO)<<symbol;
+
+    auto orderID = pt.get<std::string > (ORDER_ID_KEY,"");
+//    LOG(INFO)<<orderID;
+
+    auto price = pt.get<long double > (PRICE_KEY,-1);
+//    LOG(INFO)<<price;
+
+//    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
+
+    return order;
 }
 
 std::string 

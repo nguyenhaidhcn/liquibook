@@ -7,6 +7,8 @@
 #include "cms/CmsConsumer.h"
 #include "cms/CmsProducer.h"
 #include "Market.h"
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 extern CmsConsumer *ExtConsumer;
 extern AsynGwProducer *ExtGwProducer;

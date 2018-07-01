@@ -48,6 +48,12 @@ public:
     // liquibook::book::order
     // concept.
 
+    //init order
+    static OrderPtr InitOrderPtr(std::string input);
+
+    //get json string
+    std::string GetJson();
+
     /// @brief is this a limit order?
     bool is_limit() const;
 
@@ -118,6 +124,10 @@ public:
     //new order, cancel, modify
     int requestType_;
 
+    //info for return
+    int msgCode_;
+    std::string msgInfo_;
+
 private:
 
     std::string id_;
@@ -128,12 +138,13 @@ private:
     liquibook::book::Price price_;
     liquibook::book::Price stopPrice_;
 
+
     bool all_or_none_;
     bool is_cancel;
 
     liquibook::book::Quantity quantityFilled_;
-    int32_t quantityOnMarket_;
-    uint32_t fillCost_;
+    liquibook::book::Quantity quantityOnMarket_;
+    liquibook::book::Cost fillCost_;
     
     std::vector<StateChange> history_;
     bool verbose_;
