@@ -1,3 +1,18 @@
+note issue:
+-json lib.                              tested
+-new order request                      tested  (by activemq msg)
+-order cancel                           not yet (by activemq msg)
+-Order event (public to activemq)
+    -accept tested                      tested  ( msg msg to activemq)
+    -filled                             not yet (log event, not yet send msg)
+-Order book changed                     not yet (log event, not yet send msg)
+
+
+
+
+
+
+
 # Liquibook
 
 Open source order matching engine from [OCI](http://ociweb.com)
