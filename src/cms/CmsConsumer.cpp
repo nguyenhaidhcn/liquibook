@@ -101,7 +101,7 @@ orderentry::OrderPtr CmsConsumer::ProcessOrder(std::string input)
     auto cmd = pt.get<int32_t > ("cmd",-1);
 //    LOG(INFO)<<cmd;
 
-    auto quantity = pt.get<int32_t > ("quantity",-1);
+    auto quantity = pt.get<long double > ("quantity",-1);
 //    LOG(INFO)<<quantity;
 
     auto symbol = pt.get<std::string > ("symbol","");
@@ -110,7 +110,7 @@ orderentry::OrderPtr CmsConsumer::ProcessOrder(std::string input)
     auto orderID = pt.get<std::string > ("orderID","");
 //    LOG(INFO)<<orderID;
 
-    auto price = pt.get<int32_t > ("price",-1);
+    auto price = pt.get<long double > ("price",-1);
 //    LOG(INFO)<<price;
 
 //    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
