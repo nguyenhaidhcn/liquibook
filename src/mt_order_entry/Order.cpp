@@ -74,7 +74,9 @@ std::string Order::GetJson()
     };
 
     LOG(INFO)<<j;
-    return j;
+    std::stringstream ss;
+    ss<<j;
+    return ss.str();
 
 
 }
