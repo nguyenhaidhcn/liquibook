@@ -2,6 +2,7 @@
 // Created by HaiNt on 6/30/18.
 //
 
+#pragma once
 #ifndef LIQUIBOOK_MATCHINGENGINEAPI_H
 #define LIQUIBOOK_MATCHINGENGINEAPI_H
 
@@ -20,6 +21,52 @@ enum State{
     Cancelled, // Terminal state
     Unknown
 };
+
+static std::string StateConvert(State state)
+{
+    switch(state)
+    {
+        case Submitted:
+            return "Submitted";
+            break;
+
+        case Rejected:
+            return "Rejected";
+            break;
+
+        case Accepted:
+            return "Accepted";
+            break;
+
+        case ModifyRequested:
+            return "ModifyRequested";
+            break;
+
+        case ModifyRejected:
+            return "ModifyRejected";
+            break;
+
+        case Modified:
+            return "Modified";
+            break;
+
+        case PartialFilled:
+            return "PartialFilled";
+            break;
+
+        case Filled:
+            return "Filled";
+            break;
+
+        case Cancelled:
+            return "Cancelled";
+            break;
+
+        default:
+            return "Unknow";
+            break;
+    }
+}
 
 //use for filler request
 enum MSG_Type

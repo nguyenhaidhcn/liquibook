@@ -654,11 +654,11 @@ void Market::on_accept(const OrderPtr& order)
     auto msg =  order->GetJson(orderInfoJson);
     nlohmann::json msgSend;
     msgSend["msg"] = orderInfoJson;
-    msgSend["msgType"] = "Accepted";
+    msgSend["msgType"] = StateConvert(order->currentState().state_);
 
     stringstream ss;
     ss<<msgSend;
-
+    LOG(INFO)<<"on accept send: "<<ss.str();
     ExtProducer->send(ss.str());
 
 }
@@ -690,11 +690,11 @@ void Market::on_fill(const OrderPtr& order,
         auto msg = order->GetJson(orderInfoJson);
         nlohmann::json msgSend;
         msgSend["msg"] = orderInfoJson;
-        msgSend["msgType"] = "Filled";
+        msgSend["msgType"] = StateConvert(order->currentState().state_);
 
         stringstream ss;
         ss << msgSend;
-        LOG(INFO)<<(ss.str());
+        LOG(INFO)<<"onfilled send: "<<(ss.str());
         ExtProducer->send(ss.str());
 
     }
@@ -703,11 +703,11 @@ void Market::on_fill(const OrderPtr& order,
         auto msg = matched_order->GetJson(orderInfoJson);
         nlohmann::json msgSend;
         msgSend["msg"] = orderInfoJson;
-        msgSend["msgType"] = "Filled";
+        msgSend["msgType"] = StateConvert(matched_order->currentState().state_);
 
         stringstream ss;
         ss << msgSend;
-        LOG(INFO)<<(ss.str());
+        LOG(INFO)<<"onFilled send: "<<(ss.str());
         ExtProducer->send(ss.str());
     }
 
