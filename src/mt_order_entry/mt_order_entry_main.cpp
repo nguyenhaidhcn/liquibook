@@ -51,7 +51,7 @@ void start_cms()
     std::string destURI2 = ConfigFile::getInstance()->Value("Activemq","topic.orderResponse");
 
     // Create the producer and run it.
-    ExtProducer  =new AsynGwProducer( brokerURI, destURI2, false , false);
+    ExtProducer  =new AsynGwProducer( brokerURI, destURI2, true , false);
     ExtProducer->run();
 //
 //    // Start it up and it will listen forever.

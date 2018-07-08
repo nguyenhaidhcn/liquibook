@@ -8,6 +8,7 @@
 #include <cctype>
 #include <locale>
 #include "global/global.h"
+#include "json.hpp"
 
 namespace
 {
@@ -649,10 +650,16 @@ void Market::on_accept(const OrderPtr& order)
 {
     order->onAccepted();
     LOG(INFO) << "\t on_accept: " <<order->symbol()<< std::endl;
+    nlohmann::json orderInfoJson;
+    auto msg =  order->GetJson(orderInfoJson);
+    nlohmann::json msgSend;
+    msgSend["msg"] = orderInfoJson;
+    msgSend["msgType"] = "Accepted";
 
-    auto msg =  order->GetJson();
+    stringstream ss;
+    ss<<msgSend;
 
-    ExtProducer->send(msg);
+    ExtProducer->send(ss.str());
 
 }
 
@@ -670,10 +677,41 @@ void Market::on_fill(const OrderPtr& order,
 {
     order->onFilled(fill_qty, fill_cost);
     matched_order->onFilled(fill_qty, fill_cost);
-    LOG(INFO) << (order->is_buy() ? "\tBought: " : "\tSold: ")
-        << fill_qty << " Shares for " << fill_cost << ' ' <<*order<< std::endl;
-    LOG(INFO) << (matched_order->is_buy() ? "\tBought: " : "\tSold: ")
-        << fill_qty << " Shares for " << fill_cost << ' ' << *matched_order << std::endl;
+
+//    LOG(INFO) << (order->is_buy() ? "\tBought: " : "\tSold: ")
+//        << fill_qty << " Shares for " << fill_cost << ' ' <<*order<< std::endl;
+//    LOG(INFO) << (matched_order->is_buy() ? "\tBought: " : "\tSold: ")
+//        << fill_qty << " Shares for " << fill_cost << ' ' << *matched_order << std::endl;
+    //send notify
+    {
+
+
+        nlohmann::json orderInfoJson;
+        auto msg = order->GetJson(orderInfoJson);
+        nlohmann::json msgSend;
+        msgSend["msg"] = orderInfoJson;
+        msgSend["msgType"] = "Filled";
+
+        stringstream ss;
+        ss << msgSend;
+        LOG(INFO)<<(ss.str());
+        ExtProducer->send(ss.str());
+
+    }
+    {
+        nlohmann::json orderInfoJson;
+        auto msg = matched_order->GetJson(orderInfoJson);
+        nlohmann::json msgSend;
+        msgSend["msg"] = orderInfoJson;
+        msgSend["msgType"] = "Filled";
+
+        stringstream ss;
+        ss << msgSend;
+        LOG(INFO)<<(ss.str());
+        ExtProducer->send(ss.str());
+    }
+
+
 }
 
 void Market::on_cancel(const OrderPtr& order)
@@ -786,7 +824,7 @@ void Market::Process(orderentry::OrderPtr order)
             ss  <<"Not support requestType:"<<order->requestType_;
             LOG(INFO)<<ss.str();
             order->msgInfo_= ss.str();
-            ExtProducer->send(order->GetJson());
+//            ExtProducer->send(order->GetJson());
         }
     }
 }

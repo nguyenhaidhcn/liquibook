@@ -73,7 +73,7 @@ private:
 public:
 
     AsynGwProducer( const std::string& brokerURI,
-                    const std::string& destURI, bool useTopic = false, bool clientAck = false ) :
+                    const std::string& destURI, bool useTopic = true, bool clientAck = false ) :
         connection(NULL),
         session(NULL),
         destination(NULL),

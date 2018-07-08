@@ -10,7 +10,7 @@
 #include <vector>
 #include "MatchingEngineAPI.h"
 
-
+#include "json.hpp"
 //
 //{
 //"orderID":"24",
@@ -22,6 +22,7 @@
 //"stopPrice":25,
 //"is_cancel":0
 //}
+using namespace nlohmann;
 namespace orderentry
 {
 
@@ -53,7 +54,7 @@ public:
     static OrderPtr InitOrderPtr(std::string input);
 
     //get json string
-    std::string GetJson();
+    std::string GetJson(json &j);
 
     /// @brief is this a limit order?
     bool is_limit() const;

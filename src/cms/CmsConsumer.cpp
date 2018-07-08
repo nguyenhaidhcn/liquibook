@@ -61,6 +61,8 @@ void CmsConsumer::ProcessRequest(std::string input)
         case  MSG_Type::RequestCancel:
         {
             auto orderptr =  orderentry::Order::InitOrderPtr(input);
+            if (orderptr == nullptr)
+                return;
             orderptr->requestType_ = msg_type;
             ExtMarket->Process(orderptr);
             break;

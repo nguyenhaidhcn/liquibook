@@ -16,15 +16,20 @@ using boost::property_tree::write_json;
 using namespace nlohmann;
 
 #define REQUEST_TYPE_KEY            "requestType"
-#define LOGIN_ID_KEY                "loginId"
-#define CMD_KEY                     "cmd"
+#define LOGIN_ID_KEY                "userId"
+#define ORDER_SIDE                  "orderSide"
 #define QUANTITY_KEY                "quantity"
 #define SYMBOL_KEY                  "symbol"
 #define ORDER_ID_KEY                "orderId"
 #define PRICE_KEY                   "price"
 #define MSG_CODE_KEY                   "msgCode"
 #define MESSAGE_KEY                   "message"
+#define QUANTITY_FILLED                "quantityFilled"
+#define QUANTITY_MARKET               "quantityOnMarket"
+#define FILL_COST                   "fillCost"
 
+//TODO history
+//std::vector<StateChange> history_;
 
 
 namespace orderentry
@@ -60,22 +65,26 @@ Order::Order(
 {
 }
 
-std::string Order::GetJson()
+std::string Order::GetJson( json &j)
 {
-    json j = json{
+    j = json{
         {LOGIN_ID_KEY, this->loginId_},
         {ORDER_ID_KEY, this->order_id()},
         {QUANTITY_KEY, this->quantity_},
-        {CMD_KEY, this->is_buy()},
+        {ORDER_SIDE, this->is_buy()? "BUY":"SELL"},
         {SYMBOL_KEY, this->symbol_.c_str()},
         {PRICE_KEY, this->price_},
         {MSG_CODE_KEY, this->msgCode_},
-        {MESSAGE_KEY, this->msgInfo_}
+        {MESSAGE_KEY, this->msgInfo_},
+        {QUANTITY_FILLED, this->quantityFilled_},
+        {QUANTITY_MARKET, this->quantityOnMarket_},
+        {FILL_COST, this->fillCost_}
+
     };
 
-    LOG(INFO)<<j;
     std::stringstream ss;
     ss<<j;
+    LOG(INFO)<<ss.str();
     return ss.str();
 
 
@@ -100,7 +109,14 @@ OrderPtr Order::InitOrderPtr(std::string input)
     auto loginID = pt.get<std::string > (LOGIN_ID_KEY,"");
 //    LOG(INFO)<<loginID;
 
-    auto cmd = pt.get<int32_t > (CMD_KEY,-1);
+    auto orderSide = pt.get<std::string > (ORDER_SIDE,"");
+    bool isBuy = true;
+    if(orderSide.compare("BUY") == 0) isBuy = true;
+    else if(orderSide.compare("SELL") == 0) isBuy = false;
+    else {
+        LOG(INFO)<<"Not support orderSide: "<<orderSide<<" BUY/SELL only";
+        return nullptr;
+    }
 //    LOG(INFO)<<cmd;
 
     auto quantity = pt.get<long double > (QUANTITY_KEY,-1);
@@ -116,10 +132,7 @@ OrderPtr Order::InitOrderPtr(std::string input)
 //    LOG(INFO)<<price;
 
 //    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
-    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, cmd, quantity, symbol, price, 0, 0,0);
-
-
-
+    orderentry::OrderPtr order = std::make_shared<orderentry::Order>(requestType,loginID, orderID, isBuy, quantity, symbol, price, 0, 0,0);
 
     return order;
 }
@@ -259,6 +272,7 @@ Order::onFilled(
     liquibook::book::Cost fill_cost)
 {
     quantityOnMarket_ -= fill_qty;
+    quantityFilled_ += fill_qty;
     fillCost_ += fill_cost;
 
     std::stringstream msg;
