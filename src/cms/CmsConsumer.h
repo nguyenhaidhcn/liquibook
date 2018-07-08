@@ -16,6 +16,8 @@
  */
 
 #pragma once
+
+
 #include <decaf/lang/Thread.h>
 #include <decaf/lang/Runnable.h>
 #include <decaf/util/concurrent/CountDownLatch.h>
@@ -156,7 +158,7 @@ public:
     }
 
 
-    orderentry::OrderPtr ProcessOrder(std::string input);
+    void ProcessRequest(std::string input);
 
 private:
 

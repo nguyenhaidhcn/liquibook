@@ -16,11 +16,11 @@ using boost::property_tree::write_json;
 using namespace nlohmann;
 
 #define REQUEST_TYPE_KEY            "requestType"
-#define LOGIN_ID_KEY                "loginID"
+#define LOGIN_ID_KEY                "loginId"
 #define CMD_KEY                     "cmd"
 #define QUANTITY_KEY                "quantity"
 #define SYMBOL_KEY                  "symbol"
-#define ORDER_ID_KEY                "orderID"
+#define ORDER_ID_KEY                "orderId"
 #define PRICE_KEY                   "price"
 #define MSG_CODE_KEY                   "msgCode"
 #define MESSAGE_KEY                   "message"
@@ -31,8 +31,8 @@ namespace orderentry
 {
 
 Order::Order(
-    const int requestType,
-    const int32_t loginId,
+    int requestType,
+    std::string loginId,
     const std::string & id,
     bool buy_side,
     liquibook::book::Quantity quantity,
@@ -86,16 +86,18 @@ OrderPtr Order::InitOrderPtr(std::string input)
     LOG(INFO)<<input;
 
     std::istringstream request_json(input);
+    boost::property_tree::ptree ptMain;
+    boost::property_tree::read_json(request_json, ptMain);
     boost::property_tree::ptree pt;
-    boost::property_tree::read_json(request_json, pt);
 
+    pt = ptMain.get_child("msg");
 //    orderentry::Order order();
 
 
     auto requestType = pt.get<int32_t > (REQUEST_TYPE_KEY,-1);
 //    LOG(INFO)<<requestType;
 
-    auto loginID = pt.get<int32_t > (LOGIN_ID_KEY,-1);
+    auto loginID = pt.get<std::string > (LOGIN_ID_KEY,"");
 //    LOG(INFO)<<loginID;
 
     auto cmd = pt.get<int32_t > (CMD_KEY,-1);
@@ -177,19 +179,19 @@ Order::stop_price() const
     return stopPrice_;
 }
 
-uint32_t 
+long double
 Order::quantityOnMarket() const
 {
     return quantityOnMarket_;
 }
 
-uint32_t 
+long double
 Order::quantityFilled() const
 {
     return quantityFilled_;
 }
 
-uint32_t 
+long double
 Order::fillCost() const
 {
     return fillCost_;
@@ -324,7 +326,7 @@ Order::onReplaceRejected(const char * reason)
 {
     history_.emplace_back(StateChange(ModifyRejected, reason));
 }
-int32_t
+std::string
 Order::getLoginId_() const
 {
     return loginId_;

@@ -299,7 +299,7 @@ bool Market::doAdd(const  std::string & side, const std::vector<std::string> & t
     std::string orderId = NumberToString(++orderIdSeed_);
 
     //TODO check init order add login
-        int32_t loginId = 1;
+        std::string loginId = "1";
     OrderPtr order = std::make_shared<Order>(0,loginId, orderId, side == "BUY", quantity, symbol, price, stopPrice, aon, ioc);
 
     const liquibook::book::OrderConditions AON(liquibook::book::oc_all_or_none);
@@ -652,7 +652,7 @@ void Market::on_accept(const OrderPtr& order)
 
     auto msg =  order->GetJson();
 
-    ExtGwProducer->send(msg);
+    ExtProducer->send(msg);
 
 }
 
@@ -761,20 +761,20 @@ void Market::Process(orderentry::OrderPtr order)
 {
     switch (order->requestType_)
     {
-        case RequestType ::RequestNew:
+        case MSG_Type ::RequestNew:
         {
             LOG(INFO)<<"add new order";
             this->NewOrder(order);
             break;
         }
 
-        case RequestType ::RequestCancel:
+        case MSG_Type ::RequestCancel:
         {
             LOG(INFO)<<"TODO cancel";
             break;
         }
 
-        case RequestType ::RequestMofiy:
+        case MSG_Type ::RequestMofiy:
         {
             LOG(INFO)<<"TODO modify order";
             break;
@@ -786,7 +786,7 @@ void Market::Process(orderentry::OrderPtr order)
             ss  <<"Not support requestType:"<<order->requestType_;
             LOG(INFO)<<ss.str();
             order->msgInfo_= ss.str();
-            ExtGwProducer->send(order->GetJson());
+            ExtProducer->send(order->GetJson());
         }
     }
 }
@@ -813,7 +813,7 @@ void Market::NewOrder(orderentry::OrderPtr order)
 
     ///////////////
     // PRICE
-    uint32_t price = 0;
+    liquibook::book::Price price = 0;
     price = order->price();
 
     if(price > 10000000)

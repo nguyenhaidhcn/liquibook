@@ -34,7 +34,7 @@ public:
 public:
     Order(
         int requestType,
-        const int32_t loginId,
+        std::string loginId,
         const std::string & id,
         bool buy_side,
         liquibook::book::Quantity quantity,
@@ -81,18 +81,16 @@ public:
     virtual bool immediate_or_cancel() const;
 
     std::string symbol() const;
-    std::string symbolKey(){return "symbol";}
 
     std::string order_id() const;
-    std::string orderIDKey(){return "orderID";}
 
-    uint32_t quantityFilled() const;
+    long double quantityFilled() const;
 
-    uint32_t quantityOnMarket() const;
+    long double quantityOnMarket() const;
 
-    uint32_t fillCost() const;
+    long double fillCost() const;
 
-    int32_t getLoginId_() const;
+    std::string getLoginId_() const;
 
     Order & verbose(bool verbose = true);
     bool isVerbose()const;
@@ -132,7 +130,7 @@ public:
 private:
 
     std::string id_;
-    int32_t  loginId_;
+    std::string  loginId_;
     bool buy_side_;
     std::string symbol_;
     liquibook::book::Quantity quantity_;

@@ -1,4 +1,4 @@
 [Activemq]
 brokerURI=tcp://localhost:61616
-queue.orderRequest = foo.bar
+queue.orderRequest = QueueRequest
 topic.orderResponse = OrderOut

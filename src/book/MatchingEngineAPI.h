@@ -22,11 +22,29 @@ enum State{
 };
 
 //use for filler request
-enum RequestType
+enum MSG_Type
 {
+    //order request
     RequestCancel,
     RequestNew,
-    RequestMofiy
+    RequestMofiy,
+
+    // event notify
+    EventDepMarketChanged,
+    EventBboChanged,
+    EventPartialFilled,
+    EventFilled,
+    EventCanceled,
+
+
+    MsgDefault
+
+};
+
+enum OrderType
+{
+    PENDING,
+    MARKET
 };
 
 //
