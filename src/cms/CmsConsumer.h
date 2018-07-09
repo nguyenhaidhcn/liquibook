@@ -17,7 +17,7 @@
 
 #pragma once
 
-
+#include <activemq/exceptions/ActiveMQException.h>
 #include <decaf/lang/Thread.h>
 #include <decaf/lang/Runnable.h>
 #include <decaf/util/concurrent/CountDownLatch.h>
