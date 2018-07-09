@@ -24,8 +24,8 @@ using namespace nlohmann;
 #define PRICE_KEY                   "price"
 #define MSG_CODE_KEY                   "msgCode"
 #define MESSAGE_KEY                   "message"
-#define QUANTITY_FILLED                "quantityFilled"
-#define QUANTITY_MARKET               "quantityOnMarket"
+#define QUANTITY_FILLED                "filledQuantity"
+#define QUANTITY_MARKET               "remainQuantity"
 #define FILL_COST                   "fillCost"
 
 //TODO history

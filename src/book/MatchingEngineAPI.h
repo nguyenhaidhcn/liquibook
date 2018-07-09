@@ -27,7 +27,7 @@ static std::string StateConvert(State state)
     switch(state)
     {
         case Submitted:
-            return "Submitted";
+            return "SUBMITTED";
             break;
 
         case Rejected:
@@ -35,7 +35,7 @@ static std::string StateConvert(State state)
             break;
 
         case Accepted:
-            return "Accepted";
+            return "ACCEPTED";
             break;
 
         case ModifyRequested:
@@ -47,19 +47,19 @@ static std::string StateConvert(State state)
             break;
 
         case Modified:
-            return "Modified";
+            return "MODIFIED";
             break;
 
         case PartialFilled:
-            return "PartialFilled";
+            return "PARTIAL_FILLED";
             break;
 
         case Filled:
-            return "Filled";
+            return "FILLED";
             break;
 
         case Cancelled:
-            return "Cancelled";
+            return "CANCELLED";
             break;
 
         default:
