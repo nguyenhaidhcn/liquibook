@@ -143,8 +143,10 @@ private:
     bool is_cancel;
 
     liquibook::book::Quantity quantityFilled_;
+    liquibook::book::Quantity totalQuantityFilled_;
     liquibook::book::Quantity quantityOnMarket_;
     liquibook::book::Cost fillCost_;
+    liquibook::book::Cost totalFillCost_;
     
     std::vector<StateChange> history_;
     bool verbose_;

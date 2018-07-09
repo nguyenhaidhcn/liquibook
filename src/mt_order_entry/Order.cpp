@@ -25,8 +25,10 @@ using namespace nlohmann;
 #define MSG_CODE_KEY                   "msgCode"
 #define MESSAGE_KEY                   "message"
 #define QUANTITY_FILLED                "filledQuantity"
+#define TOTAL_QUANTITY_FILLED        "totalFilledQuantity"
 #define QUANTITY_MARKET               "remainQuantity"
 #define FILL_COST                   "fillCost"
+#define TOTAL_FILL_COST              "totalFillCost"
 
 //TODO history
 //std::vector<StateChange> history_;
@@ -59,6 +61,8 @@ Order::Order(
     , quantityFilled_(0)
     , quantityOnMarket_(0)
     , fillCost_(0)
+     ,totalFillCost_(0),
+     ,totalQuantityFilled_(0),
     , verbose_(false)
     ,msgCode_(0)
 
@@ -78,7 +82,10 @@ std::string Order::GetJson( json &j)
         {MESSAGE_KEY, this->msgInfo_},
         {QUANTITY_FILLED, this->quantityFilled_},
         {QUANTITY_MARKET, this->quantityOnMarket_},
-        {FILL_COST, this->fillCost_}
+        {FILL_COST, this->fillCost_},
+        {TOTAL_FILL_COST, this->totalFillCost_},
+        {TOTAL_QUANTITY_FILLED, this->totalQuantityFilled_},
+
 
     };
 
@@ -272,8 +279,10 @@ Order::onFilled(
     liquibook::book::Cost fill_cost)
 {
     quantityOnMarket_ -= fill_qty;
-    quantityFilled_ += fill_qty;
-    fillCost_ += fill_cost;
+    quantityFilled_ = fill_qty;
+    totalQuantityFilled_ += fill_qty;
+    fillCost_ = fill_cost;
+    totalFillCost_ += fill_cost;
 
     std::stringstream msg;
     msg << fill_qty << " for " << fill_cost;
