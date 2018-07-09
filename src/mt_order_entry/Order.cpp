@@ -61,8 +61,8 @@ Order::Order(
     , quantityFilled_(0)
     , quantityOnMarket_(0)
     , fillCost_(0)
-     ,totalFillCost_(0),
-     ,totalQuantityFilled_(0),
+     ,totalFillCost_(0)
+     ,totalQuantityFilled_(0)
     , verbose_(false)
     ,msgCode_(0)
 
