@@ -21,7 +21,7 @@ using namespace nlohmann;
 #define QUANTITY_KEY                "quantity"
 #define SYMBOL_KEY                  "symbol"
 #define ORDER_ID_KEY                "orderId"
-#define PRICE_KEY                   "price"
+#define PRICE_KEY                   "rate"
 #define MSG_CODE_KEY                   "msgCode"
 #define MESSAGE_KEY                   "message"
 #define QUANTITY_FILLED                "filledQuantity"
