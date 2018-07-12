@@ -51,28 +51,28 @@ void CmsConsumer::ProcessRequest(std::string input)
 
 //
 //
-    msg_type = pt.get<std::string > ("msgType", "").compare("RequestNew") == 0? MSG_Type ::RequestNew: MSG_Type ::MsgDefault;
+    std::string msgTypeStr = pt.get<std::string > ("msgType", "");
+    if(msgTypeStr.compare("REQUESTNEW") == 0)
+    {
+        msg_type = MSG_Type ::RequestNew;
+    }
+    else if(msgTypeStr.compare("REQUESTCANCEL") == 0)
+    {
+        msg_type = MSG_Type ::RequestCancel;
+    }
+    else{
+        msg_type = MSG_Type ::MsgDefault;
+
+    }
+//    .compare("REQUESTNEW") == 0? MSG_Type ::RequestNew: MSG_Type ::MsgDefault;
+//    msg_type = pt.get<std::string > ("msgType", "").compare("REQUESTCANCEL") == 0? MSG_Type ::RequestCancel: MSG_Type ::MsgDefault;
+
 
     LOG(INFO)<<"msg_type:"<<msg_type;
-    switch (msg_type)
-    {
-        case  MSG_Type::RequestNew:
-        case  MSG_Type::RequestMofiy:
-        case  MSG_Type::RequestCancel:
-        {
-            auto orderptr =  orderentry::Order::InitOrderPtr(input);
-            if (orderptr == nullptr)
-                return;
-            orderptr->requestType_ = msg_type;
-            ExtMarket->Process(orderptr);
-            break;
-        }
-        default:
-        {
-            LOG(INFO)<<"Not support msgType:"<<msg_type;
-            LOG(INFO)<<input;
-            break;
-        }
-    }
 
+    auto orderptr =  orderentry::Order::InitOrderPtr(input);
+    if (orderptr == nullptr)
+        return;
+    orderptr->requestType_ = msg_type;
+    ExtMarket->Process(orderptr);
 }

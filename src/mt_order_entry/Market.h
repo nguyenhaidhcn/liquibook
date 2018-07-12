@@ -50,9 +50,7 @@ public:
     bool apply(const std::vector<std::string> & tokens);
 
     void Process(orderentry::OrderPtr order);
-    void NewOrder(orderentry::OrderPtr order);
-    void CancelOrder(orderentry::OrderPtr order);
-    void ModifyOrder(orderentry::OrderPtr order);
+
 
 public:
     /////////////////////////////////////
@@ -132,6 +130,11 @@ private:
     OrderBookPtr addBook(const std::string & symbol, bool useDepthBook);
     bool findExistingOrder(const std::vector<std::string> & tokens, size_t & position, OrderPtr & order, OrderBookPtr & book);
     bool findExistingOrder(const std::string & orderId, OrderPtr & order, OrderBookPtr & book);
+
+    //Order request implement
+    void NewOrder(orderentry::OrderPtr order);
+    void CancelOrder(orderentry::OrderPtr order);
+    void ModifyOrder(orderentry::OrderPtr order);
 
     std::ostream & out() 
     {

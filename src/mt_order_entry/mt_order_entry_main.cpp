@@ -64,7 +64,7 @@ void start_cms()
 
 int main(int argc, const char * argv[])
 {
-    google::InitGoogleLogging(argv[0]);
+//    google::InitGoogleLogging(argv[0]);
 
     auto config = ConfigFile::getInstance();
     DLOG(INFO)<<config;

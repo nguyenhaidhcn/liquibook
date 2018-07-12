@@ -718,6 +718,20 @@ void Market::on_cancel(const OrderPtr& order)
 {
     order->onCancelled();
     LOG(INFO) << "\tCanceled: " << *order<< std::endl;
+
+    {
+        nlohmann::json orderInfoJson;
+        auto msg = order->GetJson(orderInfoJson);
+        nlohmann::json msgSend;
+        msgSend["msg"] = orderInfoJson;
+        msgSend["msgType"] = StateConvert(order->currentState().state_);
+
+        stringstream ss;
+        ss << msgSend;
+        LOG(INFO)<<"on_cancel send: "<<(ss.str());
+        ExtProducer->send(ss.str());
+    }
+
 }
 
 void Market::on_cancel_reject(const OrderPtr& order, const char* reason)
@@ -808,7 +822,8 @@ void Market::Process(orderentry::OrderPtr order)
 
         case MSG_Type ::RequestCancel:
         {
-            LOG(INFO)<<"TODO cancel";
+            LOG(INFO)<<"cancel orderId:"<<order->order_id();
+            this->CancelOrder(order);
             break;
         }
 
@@ -860,7 +875,8 @@ void Market::NewOrder(orderentry::OrderPtr order)
         return;
     }
 
-    std::string orderId = NumberToString(++orderIdSeed_);
+//    std::string orderId = NumberToString(++orderIdSeed_);
+    std::string orderId = order->order_id();
 
     auto book = findBook(symbol);
     if(!book)
@@ -869,11 +885,23 @@ void Market::NewOrder(orderentry::OrderPtr order)
         return;
     }
 
+    //todo check order id duplicate
     order->onSubmitted();
     LOG(INFO) << "ADDING order:  " << order->order_id() << std::endl;
-
     orders_[orderId] = order;
     book->add(order, 0);
+}
+
+void Market::CancelOrder(orderentry::OrderPtr order)
+{
+    OrderBookPtr book;
+    if(!findExistingOrder(order->order_id(), order, book))
+    {
+        LOG(INFO) << "Cancel order. not found id: " << order->order_id() << std::endl;
+        return;
+    }
+    LOG(INFO) << "Requesting Cancel: " << order->order_id()<< "symbol:"<< order->symbol() << std::endl;
+    book->cancel(order);
 }
 
 }  // namespace orderentry
