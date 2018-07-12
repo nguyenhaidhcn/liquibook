@@ -29,9 +29,9 @@ void start_cms()
 
     activemq::library::ActiveMQCPP::initializeLibrary();
 
-    std::cout << "=====================================================\n";
-    std::cout << "Starting the example:" << std::endl;
-    std::cout << "-----------------------------------------------------\n";
+    DLOG(INFO) << "=====================================================\n";
+    DLOG(INFO) << "Starting the Matching engine:" << std::endl;
+    DLOG(INFO) << "-----------------------------------------------------\n";
 
 //    std::string brokerURI =
 //        "failover:(tcp://127.0.0.1:61616"
@@ -58,13 +58,16 @@ void start_cms()
     ExtConsumer->runConsumer();
 
 
+    DLOG(INFO) << "=====================================================\n";
+    DLOG(INFO) << "Started the Matching engine:" << std::endl;
+    DLOG(INFO) << "-----------------------------------------------------\n";
 
 
 };
 
 int main(int argc, const char * argv[])
 {
-//    google::InitGoogleLogging(argv[0]);
+    google::InitGoogleLogging(argv[0]);
 
     auto config = ConfigFile::getInstance();
     DLOG(INFO)<<config;
