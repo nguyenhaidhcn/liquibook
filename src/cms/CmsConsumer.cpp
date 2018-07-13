@@ -52,18 +52,19 @@ void CmsConsumer::ProcessRequest(std::string input)
 //
 //
     std::string msgTypeStr = pt.get<std::string > ("msgType", "");
+
+    msg_type = MSG_Type ::MsgDefault;
+
     if(msgTypeStr.compare("REQUESTNEW") == 0)
     {
         msg_type = MSG_Type ::RequestNew;
     }
-    else if(msgTypeStr.compare("REQUESTCANCEL") == 0)
+
+    if(msgTypeStr.compare("REQUESTCANCEL") == 0)
     {
         msg_type = MSG_Type ::RequestCancel;
     }
-    else{
-        msg_type = MSG_Type ::MsgDefault;
 
-    }
 //    .compare("REQUESTNEW") == 0? MSG_Type ::RequestNew: MSG_Type ::MsgDefault;
 //    msg_type = pt.get<std::string > ("msgType", "").compare("REQUESTCANCEL") == 0? MSG_Type ::RequestCancel: MSG_Type ::MsgDefault;
 

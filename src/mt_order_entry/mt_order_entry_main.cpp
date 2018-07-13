@@ -61,13 +61,16 @@ void start_cms()
     DLOG(INFO) << "=====================================================\n";
     DLOG(INFO) << "Started the Matching engine:" << std::endl;
     DLOG(INFO) << "-----------------------------------------------------\n";
+    time_t t;
+    time(&t);
+    sleep(t);
 
 
 };
 
 int main(int argc, const char * argv[])
 {
-    google::InitGoogleLogging(argv[0]);
+//    google::InitGoogleLogging(argv[0]);
 
     auto config = ConfigFile::getInstance();
     DLOG(INFO)<<config;
