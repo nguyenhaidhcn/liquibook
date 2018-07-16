@@ -787,11 +787,36 @@ void Market::on_order_book_change(const OrderBook* book)
 // Implement BboListener interface
 void Market::on_bbo_change(const DepthOrderBook * book, const BookDepth * depth)
 {
-    LOG(INFO) << "\tBBO Change: " << ' ' << book->symbol()
-        << (depth->changed() ? " Changed" : " Unchanged")
-        << " Change Id: " << depth->last_change()
-        << " Published: " << depth->last_published_change()
-        << std::endl;
+
+    auto bids = book->bids();
+//    bids.find();
+    auto asks = book->asks();
+//    LOG(INFO) << "\tBBO Change: " << ' ' << book->symbol()
+//        << (depth->changed() ? " Changed" : " Unchanged")
+//        << " Change Id: " << depth->last_change()
+////        << " Ask: " << book->asks().end()->second.ptr()->price()
+////        << " Bid: " << book->bids().begin()->second.ptr()->price()
+//        << " Published: " << depth->last_published_change()
+//        << std::endl;
+
+    liquibook::book::Price  bbid = 0;
+    liquibook::book::Price  bask = 0;
+
+    for(auto it = bids.begin(); it !=bids.end(); it ++)
+    {
+        auto bid =  it->first.price();
+        if(bid > bbid) bbid = bid;
+    }
+
+    for(auto it = asks.begin(); it !=asks.end(); it ++)
+    {
+        auto ask =  it->first.price();
+        if(bask == 0) bask = ask;
+
+        if(ask < bask ) bask = ask;
+    }
+
+    LOG(INFO) << "\tBBO Change: " << ' ' << book->symbol()<< " Bid:"<<bbid<<" Ask:"<<bask;
 
 }
 

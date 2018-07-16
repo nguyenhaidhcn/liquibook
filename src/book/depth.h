@@ -18,7 +18,7 @@ namespace liquibook { namespace book {
 ///
 /// TODO: Fix the bid and ask methods to behave like a normal iterator (i.e. begin(), back(), and end()
 
-template <int SIZE=5> 
+template <int SIZE=1000>
 class Depth {
 public:
   /// @brief construct
