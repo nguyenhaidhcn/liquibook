@@ -4,16 +4,17 @@
 #pragma once
 
 #include <book/depth_order_book.h>
-
 #include "Order.h"
-
-
 #include <string>
 #include <vector>
 #include <iostream>
 #include <algorithm>
 #include <map>
 #include <memory>
+
+#define LAST_UPDATE_ID "lastUpdateId"
+#define BIDS "bids"
+#define ASKS "asks"
 
 namespace orderentry
 {
@@ -146,6 +147,11 @@ private:
 
     OrderMap orders_;
     SymbolToBookMap books_;
+
+//    std::string GetJsonOrder(orderentry::OrderPtr order);
+//    std::string GetJsonBBo(orderentry::OrderPtr order);
+    std::string GetJsonDepth(BookDepth bookDepth, std::string symbol,  bool isSnapshot);
+//    std::string GetJsonFullBook(orderentry::OrderPtr order);
 
 };
 

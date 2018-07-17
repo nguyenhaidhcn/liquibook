@@ -7,6 +7,29 @@
 #define LIQUIBOOK_MATCHINGENGINEAPI_H
 
 #endif //LIQUIBOOK_MATCHINGENGINEAPI_H
+
+
+#define LAST_UPDATE_ID "lastUpdateId"
+#define BIDS "bids"
+#define ASKS "asks"
+
+
+#define REQUEST_TYPE_KEY            "requestType"
+#define LOGIN_ID_KEY                "userId"
+#define ORDER_SIDE                  "orderSide"
+#define QUANTITY_KEY                "quantity"
+#define SYMBOL_KEY                  "symbol"
+#define SNAPSHOT                  "isSnapshot"
+#define ORDER_ID_KEY                "orderId"
+#define PRICE_KEY                   "rate"
+#define MSG_CODE_KEY                   "msgCode"
+#define MESSAGE_KEY                   "message"
+#define QUANTITY_FILLED                "filledQuantity"
+#define TOTAL_QUANTITY_FILLED        "totalFilledQuantity"
+#define QUANTITY_MARKET               "remainQuantity"
+#define FILL_COST                   "fillCost"
+#define TOTAL_FILL_COST              "totalFillCost"
+
 enum State{
     Submitted,
     Rejected, // Terminal state

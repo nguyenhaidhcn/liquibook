@@ -53,7 +53,7 @@ using namespace cms;
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-class AsynGwProducer : public Runnable {
+class CmsProducer : public Runnable {
 private:
 
     Connection* connection;
@@ -67,12 +67,12 @@ private:
 
 private:
 
-    AsynGwProducer( const AsynGwProducer& );
-    AsynGwProducer& operator= ( const AsynGwProducer& );
+    CmsProducer( const CmsProducer& );
+    CmsProducer& operator= ( const CmsProducer& );
 
 public:
 
-    AsynGwProducer( const std::string& brokerURI,
+    CmsProducer( const std::string& brokerURI,
                     const std::string& destURI, bool useTopic = true, bool clientAck = false ) :
         connection(NULL),
         session(NULL),
@@ -85,7 +85,7 @@ public:
         destURI(destURI) {
     }
 
-    virtual ~AsynGwProducer(){
+    virtual ~CmsProducer(){
         cleanup();
     }
 

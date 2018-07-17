@@ -11,7 +11,9 @@
 #include <boost/property_tree/json_parser.hpp>
 
 extern CmsConsumer *ExtConsumer;
-extern AsynGwProducer *ExtProducer;
+extern CmsProducer *ExtProducerOrder;
+extern CmsProducer *ExtProducerData;
+
 
 extern orderentry::Market * ExtMarket;
 

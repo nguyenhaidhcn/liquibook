@@ -33,15 +33,9 @@ void start_cms()
     DLOG(INFO) << "Starting the Matching engine:" << std::endl;
     DLOG(INFO) << "-----------------------------------------------------\n";
 
-//    std::string brokerURI =
-//        "failover:(tcp://127.0.0.1:61616"
-//        //        "?wireFormat=openwire"
-//        //        "&connection.useAsyncSend=true"
-//        //        "&transport.commandTracingEnabled=true"
-//        //        "&transport.tcpTracingEnabled=true"
-//        //        "&wireFormat.tightEncodingEnabled=true"
-//        ")";
     std::string brokerURI = ConfigFile::getInstance()->Value("Activemq","brokerURI");
+
+
     std::string destURI = ConfigFile::getInstance()->Value("Activemq","queue.orderRequest");
     //?consumer.prefetchSize=1";
 
@@ -50,9 +44,19 @@ void start_cms()
 
     std::string destURI2 = ConfigFile::getInstance()->Value("Activemq","topic.orderResponse");
 
+    std::string destURI3 = ConfigFile::getInstance()->Value("Activemq","topic.marketData");
+
+
     // Create the producer and run it.
-    ExtProducer  =new AsynGwProducer( brokerURI, destURI2, true , false);
-    ExtProducer->run();
+    ExtProducerOrder  =new CmsProducer( brokerURI, destURI2, true , false);
+    ExtProducerOrder->run();
+
+
+    // Create the producer and run it.
+    ExtProducerData  =new CmsProducer( brokerURI, destURI3, true , false);
+    ExtProducerData->run();
+
+
 //
 //    // Start it up and it will listen forever.
     ExtConsumer->runConsumer();

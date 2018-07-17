@@ -6,5 +6,8 @@
 
 
 CmsConsumer *ExtConsumer;
-AsynGwProducer *ExtProducer;
+CmsProducer *ExtProducerOrder;
+CmsProducer *ExtProducerData;
+
+
 orderentry::Market * ExtMarket;

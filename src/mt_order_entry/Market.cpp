@@ -658,7 +658,7 @@ void Market::on_accept(const OrderPtr& order)
     stringstream ss;
     ss<<msgSend;
     LOG(INFO)<<"on accept send: "<<ss.str();
-    ExtProducer->send(ss.str());
+    ExtProducerOrder->send(ss.str());
 
 }
 
@@ -694,7 +694,7 @@ void Market::on_fill(const OrderPtr& order,
         stringstream ss;
         ss << msgSend;
         LOG(INFO)<<"onfilled send: "<<(ss.str());
-        ExtProducer->send(ss.str());
+        ExtProducerOrder->send(ss.str());
 
     }
     {
@@ -707,7 +707,7 @@ void Market::on_fill(const OrderPtr& order,
         stringstream ss;
         ss << msgSend;
         LOG(INFO)<<"onFilled send: "<<(ss.str());
-        ExtProducer->send(ss.str());
+        ExtProducerOrder->send(ss.str());
     }
 
 
@@ -728,7 +728,7 @@ void Market::on_cancel(const OrderPtr& order)
         stringstream ss;
         ss << msgSend;
         LOG(INFO)<<"on_cancel send: "<<(ss.str());
-        ExtProducer->send(ss.str());
+        ExtProducerOrder->send(ss.str());
     }
 
 }
@@ -848,6 +848,9 @@ void Market::on_depth_change(const DepthOrderBook * book, const BookDepth * dept
     LOG(INFO) << (depth->changed() ? " Changed" : " Unchanged")
         << " Change Id: " << depth->last_change()
         << " Published: " << depth->last_published_change();
+
+    //send snapshot
+    GetJsonDepth(*depth, book->symbol(), true);
     publishDepth(out(), *depth);
     LOG(INFO) << std::endl;
 }
@@ -884,7 +887,7 @@ void Market::Process(orderentry::OrderPtr order)
             ss  <<"Not support requestType:"<<order->requestType_;
             LOG(INFO)<<ss.str();
             order->msgInfo_= ss.str();
-//            ExtProducer->send(order->GetJson());
+//            ExtProducerOrder->send(order->GetJson());
         }
     }
 }
@@ -947,6 +950,68 @@ void Market::CancelOrder(orderentry::OrderPtr order)
     }
     LOG(INFO) << "Requesting Cancel: " << order->order_id()<< "symbol:"<< order->symbol() << std::endl;
     book->cancel(order);
+}
+
+std::string Market::GetJsonDepth(orderentry::BookDepth depth, std::string symbol, bool isSnapshot = true)
+{
+
+    nlohmann::json bids;
+    nlohmann::json asks;
+
+    liquibook::book::ChangeId published = depth.last_published_change();
+
+    auto pos = depth.bids();
+    auto back = depth.last_bid_level();
+    bool more = true;
+    while(more)
+    {
+        if(pos->aggregate_qty() !=0 &&
+            (pos->last_change() > published || isSnapshot == true))
+        {
+            nlohmann::json bid;
+            bid.push_back(pos->price());
+            bid.push_back(pos->aggregate_qty());
+            bids.push_back(bid);
+        }
+        ++pos;
+        more = pos != back;
+    }
+
+    pos = depth.asks();
+    back = depth.last_ask_level();
+    more = true;
+    while(more)
+    {
+        if(pos->aggregate_qty() !=0 &&
+            (pos->last_change() > published || isSnapshot == true))
+        {
+            nlohmann::json ask;
+            ask.push_back(pos->price());
+            ask.push_back(pos->aggregate_qty());
+            asks.push_back(ask);
+        }
+        ++pos;
+        more = pos != back;
+    }
+
+
+
+    nlohmann::json j = json{
+        {LAST_UPDATE_ID, depth.last_change()},
+        {BIDS, bids},
+        {ASKS, asks},
+        {SNAPSHOT, isSnapshot},
+        {SYMBOL_KEY, symbol}
+    };
+
+    std::stringstream ss;
+    ss<<j;
+    LOG(INFO)<<"SendDepth: "<<ss.str();
+
+    //send
+    ExtProducerData->send(ss.str());
+    return ss.str();
+
 }
 
 }  // namespace orderentry
