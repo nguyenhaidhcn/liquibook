@@ -19,6 +19,10 @@ enum State{
     CancelRequested,
     CancelRejected,
     Cancelled, // Terminal state
+
+    //Marketdata
+    BboChanged,
+    OrderBookChanged,
     Unknown
 };
 
@@ -60,6 +64,14 @@ static std::string StateConvert(State state)
 
         case Cancelled:
             return "CANCELLED";
+            break;
+
+        case BboChanged:
+            return "BBOCHANGED";
+            break;
+
+        case OrderBookChanged:
+            return "ORDER_BOOK_CHANGED";
             break;
 
         default:

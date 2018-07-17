@@ -166,6 +166,8 @@ void
 DepthOrderBook<OrderPtr, SIZE>::on_order_book_change()
 {
   // Book was updated, see if the depth we track was effected
+  LOG(INFO)<<"Book was updated, see if the depth we track was effected";
+
   if (depth_.changed()) {
     if (depth_listener_) {
       depth_listener_->on_depth_change(this, &depth_);
@@ -180,6 +182,10 @@ DepthOrderBook<OrderPtr, SIZE>::on_order_book_change()
     }
     // Start tracking changes again...
     depth_.published();
+  }
+  else
+  {
+    LOG(INFO)<<"Book was updated, the depth we track NOT effected";
   }
 }
 

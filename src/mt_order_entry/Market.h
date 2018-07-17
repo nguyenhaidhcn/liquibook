@@ -19,9 +19,9 @@ namespace orderentry
 {
 typedef liquibook::book::OrderBook<OrderPtr> OrderBook;
 typedef std::shared_ptr<OrderBook> OrderBookPtr;
-typedef liquibook::book::DepthOrderBook<OrderPtr, 1000> DepthOrderBook;
+typedef liquibook::book::DepthOrderBook<OrderPtr, 5> DepthOrderBook;
 typedef std::shared_ptr<DepthOrderBook> DepthOrderBookPtr;
-typedef liquibook::book::Depth<1000> BookDepth;
+typedef liquibook::book::Depth<5> BookDepth;
 
 class Market 
     : public liquibook::book::OrderListener<OrderPtr>

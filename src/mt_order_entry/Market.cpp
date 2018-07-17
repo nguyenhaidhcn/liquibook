@@ -16,15 +16,14 @@ namespace
     // depth display helper
     void displayDepthLevel(std::ostream & out, const liquibook::book::DepthLevel & level)
     {
-        DLOG(INFO) << "\tPrice "  <<  level.price();
-        DLOG(INFO) << " Count: " << level.order_count();
-        DLOG(INFO) << " Quantity: " << level.aggregate_qty();
-        if(level.is_excess())
-        {
-            DLOG(INFO) << " EXCESS";
-        }
-        DLOG(INFO) << " Change id#: " << level.last_change();
-        DLOG(INFO) << std::endl;
+        //update only price. not send all
+        DLOG(INFO) << "\tPrice "  <<  level.price()<< " Count: " << level.order_count()<<" Quantity: " << level.aggregate_qty();
+//        if(level.is_excess())
+//        {
+//            DLOG(INFO) << " EXCESS";
+//        }
+//        DLOG(INFO) << " Change id#: " << level.last_change();
+//        DLOG(INFO) << std::endl;
     }
 
     void publishDepth(std::ostream & out, const orderentry::BookDepth & depth)
@@ -41,7 +40,7 @@ namespace
             {
                 if(needTitle)
                 {
-                    DLOG(INFO) << "\n\tBIDS:\n";
+                    DLOG(INFO) << "BIDS:";
                     needTitle = false;
                 }
                 displayDepthLevel(out, *pos);
@@ -779,6 +778,27 @@ void Market::on_trade(const OrderBook* book,
 void Market::on_order_book_change(const OrderBook* book)
 {
     LOG(INFO) << "\t on_order_book_change: " << ' ' << book->symbol() << std::endl;
+
+
+    auto bids = book->bids();
+    auto asks = book->asks();
+
+    liquibook::book::Price  bbid = 0;
+    liquibook::book::Price  bask = 0;
+
+    for(auto it = bids.begin(); it !=bids.end(); it ++)
+    {
+        auto bid =  it->first.price();
+        if(bid > bbid) bbid = bid;
+    }
+
+    for(auto it = asks.begin(); it !=asks.end(); it ++)
+    {
+        auto ask =  it->first.price();
+        if(bask == 0) bask = ask;
+
+        if(ask < bask ) bask = ask;
+    }
 }
 
 
