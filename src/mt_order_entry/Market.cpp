@@ -767,9 +767,11 @@ void Market::on_replace_reject(const OrderPtr& order, const char* reason)
 
 void Market::on_trade(const OrderBook* book,
     liquibook::book::Quantity qty, 
-    liquibook::book::Cost cost)
+    liquibook::book::Cost cost , bool isBuyerMaker)
 {
     LOG(INFO) << "\ton_trade: " << qty <<  ' ' << book->symbol() << " Cost "  << cost  << std::endl;
+
+    this->GetJsonTrade(book->symbol(), cost, qty, isBuyerMaker );
 }
 
 /////////////////////////////////////////
@@ -851,7 +853,7 @@ void Market::on_depth_change(const DepthOrderBook * book, const BookDepth * dept
 
     //send snapshot
     GetJsonDepth(*depth, book->symbol(), true);
-    publishDepth(out(), *depth);
+//    publishDepth(out(), *depth);
     LOG(INFO) << std::endl;
 }
 
@@ -996,7 +998,7 @@ std::string Market::GetJsonDepth(orderentry::BookDepth depth, std::string symbol
 
 
 
-    nlohmann::json j = json{
+    nlohmann::json msg = json{
         {LAST_UPDATE_ID, depth.last_change()},
         {BIDS, bids},
         {ASKS, asks},
@@ -1004,6 +1006,10 @@ std::string Market::GetJsonDepth(orderentry::BookDepth depth, std::string symbol
         {SYMBOL_KEY, symbol}
     };
 
+    nlohmann::json j = json{
+        {MSG_TYPE , DEPTH},
+        {MSG , msg}
+    };
     std::stringstream ss;
     ss<<j;
     LOG(INFO)<<"SendDepth: "<<ss.str();
@@ -1013,5 +1019,32 @@ std::string Market::GetJsonDepth(orderentry::BookDepth depth, std::string symbol
     return ss.str();
 
 }
+
+
+std::string Market::GetJsonTrade(std::string symbol, liquibook::book::Cost cost, liquibook::book::Quantity quantity, bool isBuyerMaker)
+{
+    nlohmann::json msg;
+
+    msg=  json{
+        {PRICE_KEY, cost/quantity},
+        {QUANTITY_KEY, quantity},
+        {IS_BUYER_MAKER, isBuyerMaker},
+        {SYMBOL_KEY, symbol}
+    };
+
+    nlohmann::json j = json{
+        {MSG_TYPE, TRADE},
+        {MSG, msg}
+    };
+
+    std::stringstream ss;
+    ss<<j;
+    LOG(INFO)<<"SendTrades: "<<ss.str();
+
+    //send
+    ExtProducerData->send(ss.str());
+    return ss.str();
+}
+
 
 }  // namespace orderentry

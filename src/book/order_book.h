@@ -269,7 +269,7 @@ protected:
   /// @param cost the cost of this fill (qty * price)
   virtual void on_trade(const OrderBook* book,
     Quantity qty,
-    Cost cost){}
+    Cost cost, bool isBuyerMaker){}
   // End of TradeListener Interface
   ///////////////////////////////
   // BookListener Interface
@@ -1106,10 +1106,12 @@ OrderBook<OrderPtr>::perform_callback(TypedCallback& cb)
         order_listener_->on_fill(cb.order, cb.matched_order, 
                                 cb.quantity, fill_cost);
       }
-      on_trade(this, cb.quantity, fill_cost);
+
+      auto order = cb.matched_order;
+      on_trade(this, cb.quantity, fill_cost, order->is_buy());
       if(trade_listener_)
       {
-        trade_listener_->on_trade(this, cb.quantity, fill_cost);
+        trade_listener_->on_trade(this, cb.quantity, fill_cost, order->is_buy());
       }
       break;
     }

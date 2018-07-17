@@ -16,7 +16,7 @@ public:
   /// @param cost the cost of this fill (qty * price)
   virtual void on_trade(const OrderBook* book,
                         Quantity qty,
-                        Cost cost) = 0;
+                        Cost cost, bool isBuyerMaker) = 0;
 };
 
 } }

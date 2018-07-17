@@ -76,7 +76,7 @@ public:
   /// @param price the price level of the order
   /// @param qty_delta the change in open quantity of the order (+ or -)
   /// @param is_bid indicator of bid or ask
-  void change_qty_order(Price price, int32_t qty_delta, bool is_bid);
+  void change_qty_order(Price price, Quantity qty_delta, bool is_bid);
 
   /// @brief replace a order
   /// @param current_price the current price level of the order
@@ -269,7 +269,7 @@ Depth<SIZE>::fill_order(
   } else if (filled) {
     close_order(price, fill_qty, is_bid);
   } else {
-    change_qty_order(price, -(int32_t)fill_qty, is_bid);
+    change_qty_order(price, -fill_qty, is_bid);
   }
 }
 
@@ -293,7 +293,7 @@ Depth<SIZE>::close_order(Price price, Quantity open_qty, bool is_bid)
 
 template <int SIZE> 
 inline void
-Depth<SIZE>::change_qty_order(Price price, int32_t qty_delta, bool is_bid)
+Depth<SIZE>::change_qty_order(Price price, Quantity qty_delta, bool is_bid)
 {
   DepthLevel* level = find_level(price, is_bid, false);
   if (level && qty_delta) {

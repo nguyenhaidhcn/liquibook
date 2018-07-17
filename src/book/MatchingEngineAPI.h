@@ -12,7 +12,16 @@
 #define LAST_UPDATE_ID "lastUpdateId"
 #define BIDS "bids"
 #define ASKS "asks"
+#define MSG_TYPE "msgType"
+#define MSG "msg"
 
+//msg type send market data
+#define DEPTH "DEPTH"
+#define BBO "BBO"
+#define DEPTH "DEPTH"
+#define TRADE "TRADE"
+#define CHART "CHART"
+#define IS_BUYER_MAKER "isBuyerMaker"
 
 #define REQUEST_TYPE_KEY            "requestType"
 #define LOGIN_ID_KEY                "userId"

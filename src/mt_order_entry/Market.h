@@ -100,7 +100,7 @@ public:
     /// @param cost the cost of this fill (qty * price)
     virtual void on_trade(const OrderBook* book, 
         liquibook::book::Quantity qty, 
-        liquibook::book::Cost cost);
+        liquibook::book::Cost cost, bool isBuyerMaker);
 
     /////////////////////////////////////////
     // Implement OrderBookListener interface
@@ -148,7 +148,7 @@ private:
     OrderMap orders_;
     SymbolToBookMap books_;
 
-//    std::string GetJsonOrder(orderentry::OrderPtr order);
+    std::string GetJsonTrade(std::string symbol, liquibook::book::Cost cost, liquibook::book::Quantity quantity, bool isBuyerMaker);
 //    std::string GetJsonBBo(orderentry::OrderPtr order);
     std::string GetJsonDepth(BookDepth bookDepth, std::string symbol,  bool isSnapshot);
 //    std::string GetJsonFullBook(orderentry::OrderPtr order);
