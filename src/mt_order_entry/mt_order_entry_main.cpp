@@ -16,6 +16,7 @@
 #include "global/global.h"
 
 //using namespace orderentry;
+//ChartThread ExtChart;
 
 void start_cms()
 {
@@ -61,13 +62,17 @@ void start_cms()
 //    // Start it up and it will listen forever.
     ExtConsumer->runConsumer();
 
+//    ExtChart.start();
+
 
     DLOG(INFO) << "=====================================================\n";
     DLOG(INFO) << "Started the Matching engine:" << std::endl;
     DLOG(INFO) << "-----------------------------------------------------\n";
-    time_t t;
-    time(&t);
-    sleep(t);
+//    time_t t;
+//    time(&t);
+//    sleep(t);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10000000000000));
 
 
 };

@@ -1023,6 +1023,15 @@ std::string Market::GetJsonDepth(orderentry::BookDepth depth, std::string symbol
 
 std::string Market::GetJsonTrade(std::string symbol, liquibook::book::Cost cost, liquibook::book::Quantity quantity, bool isBuyerMaker)
 {
+    Trade trade;
+    trade.symbol = symbol;
+    trade.quantity = quantity;
+    time_t t;
+    time(&t);
+    trade.time= t;
+    ExtTradeHistory.push(trade);
+
+
     nlohmann::json msg;
 
     msg=  json{

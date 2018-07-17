@@ -116,6 +116,8 @@ public:
     // Implement DepthListener interface
     void on_depth_change(const DepthOrderBook * book, const BookDepth * depth);
 
+
+
 private:
     ////////////////////////////////////
     // Command implementatiokns
@@ -137,7 +139,7 @@ private:
     void CancelOrder(orderentry::OrderPtr order);
     void ModifyOrder(orderentry::OrderPtr order);
 
-    std::ostream & out() 
+    std::ostream & out()
     {
         return *logFile_;
     }
