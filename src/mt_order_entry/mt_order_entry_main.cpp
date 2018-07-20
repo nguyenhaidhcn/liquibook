@@ -68,11 +68,11 @@ void start_cms()
     DLOG(INFO) << "=====================================================\n";
     DLOG(INFO) << "Started the Matching engine:" << std::endl;
     DLOG(INFO) << "-----------------------------------------------------\n";
-//    time_t t;
-//    time(&t);
-//    sleep(t);
+    time_t t;
+    time(&t);
+    sleep(t);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(10000000000000));
+//    std::this_thread::sleep_for(std::chrono::milliseconds(10000000000000));
 
 
 };

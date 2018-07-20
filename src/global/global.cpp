@@ -11,5 +11,5 @@ CmsProducer *ExtProducerData;
 
 
 orderentry::Market * ExtMarket;
-concurrent_queue<Trade> ExtTradeHistory;
+//concurrent_queue<Trade> ExtTradeHistory;
 std::map<std::string, ChartInfos> mapCharts;

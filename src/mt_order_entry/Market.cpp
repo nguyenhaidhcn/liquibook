@@ -1029,7 +1029,7 @@ std::string Market::GetJsonTrade(std::string symbol, liquibook::book::Cost cost,
     time_t t;
     time(&t);
     trade.time= t;
-    ExtTradeHistory.push(trade);
+//    ExtTradeHistory.push(trade);
 
 
     nlohmann::json msg;

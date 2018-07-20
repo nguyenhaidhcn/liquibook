@@ -23,7 +23,7 @@ struct Trade
 extern CmsConsumer *ExtConsumer;
 extern CmsProducer *ExtProducerOrder;
 extern CmsProducer *ExtProducerData;
-extern concurrent_queue<Trade> ExtTradeHistory;
+//extern concurrent_queue<Trade> ExtTradeHistory;
 
 extern std::map<std::string, ChartInfos> mapChartsM1;
 extern std::map<std::string, ChartInfos> mapChartsM5;
