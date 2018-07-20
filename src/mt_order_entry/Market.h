@@ -153,6 +153,9 @@ private:
     std::string GetJsonTrade(std::string symbol, liquibook::book::Cost cost, liquibook::book::Quantity quantity, bool isBuyerMaker);
 //    std::string GetJsonBBo(orderentry::OrderPtr order);
     std::string GetJsonDepth(BookDepth bookDepth, std::string symbol,  bool isSnapshot);
+
+    std::string GetJsonBook(const OrderBook* book,  bool isSnapshot);
+
 //    std::string GetJsonFullBook(orderentry::OrderPtr order);
 
 };

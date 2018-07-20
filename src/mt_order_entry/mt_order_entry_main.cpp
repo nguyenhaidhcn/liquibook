@@ -79,10 +79,19 @@ void start_cms()
 
 int main(int argc, const char * argv[])
 {
+
+
+//    FLAGS_logtostderr = true;
+    google::SetLogDestination(google::GLOG_INFO,"/tmp" );
+    google::InitGoogleLogging(argv[0]);
+    FLAGS_alsologtostderr = 1;
+    sleep(1);
 //    google::InitGoogleLogging(argv[0]);
+//    FLAGS_log_dir = "/tmp";
+
 
     auto config = ConfigFile::getInstance();
-    DLOG(INFO)<<config;
+//    DLOG(INFO)<<config;
 
     start_cms();
 
